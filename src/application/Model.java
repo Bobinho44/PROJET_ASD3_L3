@@ -96,7 +96,7 @@ public class Model {
 		for (Square square : view.getGameBoard().getEmptySquares()) {
 			if (square.getColor() == SelectableColor.WHITE) {
 				int affected =  getAffectedSquaresWithBrave(square.getX(), square.getY()).size();
-				if (affected > affectedSquares) {
+				if (affected >= affectedSquares) {
 					affectedSquares = affected;
 					selectedSquare = square;
 				}

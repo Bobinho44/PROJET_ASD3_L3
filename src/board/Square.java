@@ -62,7 +62,7 @@ public class Square {
 		return this.isCheatSquare;
 	}
 	
-	public void setIsCheatSquare(boolean isAcquired) {
+	public void setIsAcquired(boolean isAcquired) {
 		this.isAcquired = isAcquired;
 	}
 	
@@ -70,7 +70,7 @@ public class Square {
 		return this.isAcquired;
 	}
 	
-	public void setIsAcquired(boolean isCheatSquare) {
+	public void setIsCheatSquare(boolean isCheatSquare) {
 		this.isCheatSquare = isCheatSquare;
 	}
 	
