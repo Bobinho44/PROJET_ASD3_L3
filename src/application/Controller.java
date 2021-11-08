@@ -24,7 +24,7 @@ public class Controller {
 	}
 	
 	public boolean setBoardSize(String boardSize) {
-		if (boardSize != null && boardSize.matches("^[0-9]+$")) {
+		if (Utils.isValidGameBoardSize(boardSize)) {
 			model.setBoardSize(Integer.valueOf(boardSize));
 			return true;
 		}
@@ -44,7 +44,7 @@ public class Controller {
 					boardGenerationSeed += testedChar;
 				}
 			}
-			if (Math.pow(Integer.valueOf(lines.get(0)), 2) != boardGenerationSeed.length()) {
+			if (!Utils.isValidGameBoardSize(lines.get(0), (int) Math.sqrt(boardGenerationSeed.length()))) {
 				return false;
 			}
 		} catch (IOException e) {
@@ -55,7 +55,7 @@ public class Controller {
 	}
 
 	public void play(Point clickedPoint, Color color) {
-		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, Utils.translate(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
+		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, Utils.translate(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE) || color.equals(Color.GREEN)) {
 			int i = (clickedPoint.x - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.x) / (View.SQUARE_SIZE + 1);
 			int j = (clickedPoint.y - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.y) / (View.SQUARE_SIZE + 1);
 			model.play(i, j);
@@ -72,6 +72,10 @@ public class Controller {
 	
 	public void reset() {
 		model.reset();
+	}
+	
+	public void cheat() {
+		model.cheat();
 	}
 	
 }
