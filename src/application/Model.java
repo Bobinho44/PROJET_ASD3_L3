@@ -3,6 +3,8 @@ package application;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import board.SelectableColor;
 import board.SelectableRule;
 import board.Square;
@@ -17,7 +19,6 @@ public class Model {
 	private int boardSize;
 	private int whoMustPlay;
 	private boolean isStarted;
-	private Square cheatSquare;
 	
 	public Model() {
 		this.whoMustPlay = 0;
@@ -48,7 +49,6 @@ public class Model {
 	
 	public void play(int i, int j) {
 		//if (whoMustPlay == 1) {
-		if (cheatSquare != null) cheatSquare.setIsCheatSquare(false);
 		List<Square> affectedSquares = getGameRule() == SelectableRule.BRAVE ? getAffectedSquaresWithBrave(i, j) : getAffectedSquaresWithBrave(i, j);
 			view.setSquaresColor(affectedSquares, SelectableColor.getColorFromInt(whoMustPlay));
 			whoMustPlay = 1 - whoMustPlay;
@@ -56,30 +56,14 @@ public class Model {
 	}
 	
 	public List<Square> getAffectedSquaresWithBrave(int i, int j) {
-		List<Square> neighbors = new ArrayList<Square>();
-		for (int x = 0; x < 9; x++) {
-			if (Utils.isValidIndex(i + (x / 3 - 1), j + (x % 3 - 1), getBoardSize(), getBoardSize())) {
-				Square square = view.getGameBoard().getSquare(i + (x / 3 - 1), j + (x % 3 - 1));
-				if (square.getColor() == SelectableColor.WHITE) {
-					neighbors.add(square);
-				}
-			}
-		}
-		return neighbors;
+		return view.getGameBoard().getNeighbors(i, j, "Brave");
 	}
 	
 	//TODO continuer;
 	//actuellement juste récupération des cases adjacentes non acquise
 	public List<Square> getAffectedSquaresWithReckless(int i, int j) {
-		List<Square> neighbors = new ArrayList<Square>();
-		for (int x = 0; x < 9; x++) {
-			if (Utils.isValidIndex(i + (x / 3 - 1), j + (x % 3 - 1), getBoardSize(), getBoardSize())) {
-				Square square = view.getGameBoard().getSquare(i + (x / 3 - 1), j + (x % 3 - 1));
-				if (square.getColor() != SelectableColor.WHITE && !square.isAcquired()) {
-					neighbors.add(square);
-				}
-			}
-		}
+		return view.getGameBoard().getNeighbors(i, j, "Reckless");
+		
 		//utiliser int... acquired pour donner la position du premier acquired (potentiellement SelectableColor... acquiredColor
 		// Recherche dans le quadtree la case (i,j). Si cette case appartient à une petite region maintenant colorié -> 
 		// Si 8 cases de cette petite région sont colorié: la petite region est acquise
@@ -87,7 +71,6 @@ public class Model {
 		//Quand une sous region est acquise et que la region est totalement colorié:
 		//Si le joueur qui a acquis, ne possède qu'une sous region, il perd toute la region
 		//Sinon il gagne toute la region.
-		return neighbors;
 	}
 	
 	public Square getBestAffectedSquaresWithBrave() {
@@ -129,9 +112,22 @@ public class Model {
 		view.reset();
 	}
 	
-	public void cheat() {
-		cheatSquare = getBestAffectedSquaresWithBrave();
-		cheatSquare.setIsCheatSquare(true);
+	public void cheat(int i, int j) {
+		int[] newScore = {view.getGameBoard().getScore()[0], view.getGameBoard().getScore()[1]};
+		for (Square square : getAffectedSquaresWithBrave(i, j)) {
+			switch (square.getColor()) {
+			case WHITE:
+				newScore[0]++;
+				break;
+			case RED:
+				newScore[0]++;
+				newScore[1]--;
+			default:
+				break;
+			}
+		}
+		JOptionPane.showMessageDialog(view, "New estimated score:\n" + newScore[0] + " - "  + newScore[1], "Information", JOptionPane.INFORMATION_MESSAGE);
+
 	}
 	
 	public boolean isStarted() {

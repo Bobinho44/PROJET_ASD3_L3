@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import board.SelectableColor;
 import board.SelectableRule;
@@ -100,7 +101,7 @@ public class View extends JFrame implements MouseListener {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
 		setVisible(true);	
-		
+		pack();
 		GAMEBOARD_SIZE = (int) (getWidth() / 2.4);
 		GAMEBOARD_TOP_LEFT_CORNER = new Point(getWidth() / 2 - GAMEBOARD_SIZE / 2, getHeight() / 2 - GAMEBOARD_SIZE / 2);
 		
@@ -122,7 +123,7 @@ public class View extends JFrame implements MouseListener {
 		//Creates the Rules menu.
 		JMenu menuShape = new JMenu("Rules");
 		menuBar.add(menuShape);
-		for (SelectableRule gameRule : SelectableRule.values()) {
+		for (final SelectableRule gameRule : SelectableRule.values()) {
 			JRadioButtonMenuItem ruleButton = new JRadioButtonMenuItem(gameRule.getName() + " cameleon");
 			ruleButton.addActionListener(new ActionListener() {
 				  
@@ -192,19 +193,7 @@ public class View extends JFrame implements MouseListener {
 			}
 		});
 		menuBar.add(reset);
-	
-		//Creates the Cheat button.
-		JMenuItem cheat = new JMenuItem("Cheat");
-		cheat.addActionListener(new ActionListener() {
-							
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.cheat();
-						
-			}
-		});
-		menuBar.add(cheat);
-				
+
 		//Creates the Quit button.
 		JMenuItem quit = new JMenuItem("Quit");
 		quit.addActionListener(new ActionListener() {
@@ -273,10 +262,19 @@ public class View extends JFrame implements MouseListener {
 	 */
 	@Override
 	public void mousePressed(MouseEvent event) {
-		try {
-			controller.play(event.getPoint(), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
-		} catch (AWTException e) {
-			e.printStackTrace();
+		if (SwingUtilities.isLeftMouseButton(event)) {
+			try {
+				controller.play(event.getPoint(), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (SwingUtilities.isRightMouseButton(event)) {
+			try {
+				controller.cheat(event.getPoint(), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

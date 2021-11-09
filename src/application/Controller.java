@@ -55,7 +55,7 @@ public class Controller {
 	}
 
 	public void play(Point clickedPoint, Color color) {
-		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, Utils.translate(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE) || color.equals(Color.GREEN)) {
+		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, Utils.translate(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
 			int i = (clickedPoint.x - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.x) / (View.SQUARE_SIZE + 1);
 			int j = (clickedPoint.y - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.y) / (View.SQUARE_SIZE + 1);
 			model.play(i, j);
@@ -74,8 +74,12 @@ public class Controller {
 		model.reset();
 	}
 	
-	public void cheat() {
-		model.cheat();
+	public void cheat(Point clickedPoint, Color color) {
+		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, Utils.translate(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
+			int i = (clickedPoint.x - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.x) / (View.SQUARE_SIZE + 1);
+			int j = (clickedPoint.y - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.y) / (View.SQUARE_SIZE + 1);
+			model.cheat(i, j);
+		}
 	}
 	
 }

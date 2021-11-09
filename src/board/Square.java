@@ -14,13 +14,11 @@ public class Square {
 	
 	private Point coordinates;
 	private SelectableColor color;
-	private boolean isCheatSquare;
 	private boolean isAcquired;
 	
 	public Square(Point coordinates, SelectableColor color) {
 		this.coordinates = coordinates;
 		this.color = color;
-		this.isCheatSquare = false;
 		this.isAcquired = false;
 	}
 	
@@ -58,10 +56,6 @@ public class Square {
 		return neighbors;
 	}
 	
-	public boolean isCheatSquare() {
-		return this.isCheatSquare;
-	}
-	
 	public void setIsAcquired(boolean isAcquired) {
 		this.isAcquired = isAcquired;
 	}
@@ -70,12 +64,8 @@ public class Square {
 		return this.isAcquired;
 	}
 	
-	public void setIsCheatSquare(boolean isCheatSquare) {
-		this.isCheatSquare = isCheatSquare;
-	}
-	
 	public void draw(Graphics g) {
-		g.setColor(isCheatSquare ? Color.GREEN : getColor().getPaintColor());
+		g.setColor(getColor().getPaintColor());
 		int x = View.GAMEBOARD_TOP_LEFT_CORNER.x + getX() * (View.SQUARE_SIZE + 1) + 1;
 		int y = View.GAMEBOARD_TOP_LEFT_CORNER.y + getY() * (View.SQUARE_SIZE + 1) + 1;
 		g.fillRect(x, y, View.SQUARE_SIZE, View.SQUARE_SIZE);

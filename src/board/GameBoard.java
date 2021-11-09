@@ -1,10 +1,12 @@
 package board;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import application.View;
+import utils.Utils;
 
 public class GameBoard {
 
@@ -79,6 +81,29 @@ public class GameBoard {
 	
 	public void setSquare(int i, int j, SelectableColor color) {
 		this.getBoard()[i][j] = new Square(new Point(i, j), color);
+	}
+	
+	public List<Square> getNeighbors(int i, int j, String condition) {
+		List<Square> neighbors = new ArrayList<Square>();
+		for (int x = 0; x < 9; x++) {
+			if (Utils.isValidIndex(i + (x / 3 - 1), j + (x % 3 - 1), getBoardSize(), getBoardSize())) {
+				Square square = getSquare(i + (x / 3 - 1), j + (x % 3 - 1));
+				switch (condition) {
+				case "Brave":
+					if (square.getColor() != SelectableColor.WHITE || square.getX() == i && square.getY() == j) {
+						neighbors.add(square);
+					}
+					break;
+				case "Reckless":
+					if (square.getColor() != SelectableColor.WHITE && !square.isAcquired()) {
+						neighbors.add(square);
+					}
+				default:
+					break;
+				}
+			}
+		}
+		return neighbors;
 	}
 	
 	/*public Region createBoard(Point p1, Point p2) { 
