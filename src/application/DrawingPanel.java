@@ -28,7 +28,7 @@ public class DrawingPanel extends JPanel {
 		super.paintComponent(g);
 		if (gameBoard != null) {
 			g.setColor(Color.BLACK);
-			g.fillRect(View.GAMEBOARD_TOP_LEFT_CORNER.x, View.GAMEBOARD_TOP_LEFT_CORNER.y, View.GAMEBOARD_SIZE, View.GAMEBOARD_SIZE);
+			g.fillRect((int) View.GAMEBOARD_TOP_LEFT_CORNER.getX(), (int) View.GAMEBOARD_TOP_LEFT_CORNER.getY(), View.GAMEBOARD_SIZE, View.GAMEBOARD_SIZE);
 			for (int i = 0; i < gameBoard[0].length; i++) {
 				for (int j = 0; j < gameBoard[1].length; j++) {
 					gameBoard[i][j].draw(g);

@@ -5,9 +5,11 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import board.QuadTree;
 import board.SelectableColor;
 import board.SelectableRule;
 import board.Square;
+import utils.Point;
 import utils.Utils;
 
 public class Model {
@@ -16,7 +18,7 @@ public class Model {
 	
 	private String boardGenerationSeed;
 	private SelectableRule gameRule;
-	private int boardSize;
+	public static int boardSize;
 	private int whoMustPlay;
 	private boolean isStarted;
 	
@@ -31,7 +33,7 @@ public class Model {
 	
 	public void setBoardGenerationSeed(String boardGenerationSeed) {
 		this.boardGenerationSeed = boardGenerationSeed;
-		this.boardSize = (int) Math.sqrt(boardGenerationSeed.length());
+		Model.boardSize = (int) Math.sqrt(boardGenerationSeed.length());
 	}
 
 	public String getBoardGenerationSeed() {
@@ -39,12 +41,12 @@ public class Model {
 	}
 	
 	public void setBoardSize(int boardSize) {
-		this.boardSize = boardSize;
+		Model.boardSize = boardSize;
 		this.boardGenerationSeed = "";
 	}
 	
 	public int getBoardSize() {
-		return this.boardSize;
+		return Model.boardSize;
 	}
 	
 	public void play(int i, int j) {
@@ -139,6 +141,7 @@ public class Model {
 			if (isStarted()) {
 				if (view.getGameBoard() == null) {
 					view.createGameBoard(getBoardGenerationSeed(), getBoardSize());
+					QuadTree.toString(view.getGameBoard().createAllRegions(new Point((float) (boardSize - 1)/2, (float) (boardSize - 1)/2), 0));
 				}
 				view.update();
 			} else if (getBoardGenerationSeed() != null && getGameRule() != null) {

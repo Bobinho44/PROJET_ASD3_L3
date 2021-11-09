@@ -6,9 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.List;
 import java.awt.Robot;
-import java.awt.Point;
 import java.awt.GridLayout;
 import java.awt.Color;
 
@@ -26,10 +24,14 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import java.util.List;
+
 import board.SelectableColor;
 import board.SelectableRule;
 import board.GameBoard;
 import board.Square;
+import utils.Point;
+import utils.Utils;
 
 @SuppressWarnings("serial")
 public class View extends JFrame implements MouseListener {
@@ -101,7 +103,7 @@ public class View extends JFrame implements MouseListener {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
 		setVisible(true);	
-		pack();
+		//pack();
 		GAMEBOARD_SIZE = (int) (getWidth() / 2.4);
 		GAMEBOARD_TOP_LEFT_CORNER = new Point(getWidth() / 2 - GAMEBOARD_SIZE / 2, getHeight() / 2 - GAMEBOARD_SIZE / 2);
 		
@@ -264,14 +266,14 @@ public class View extends JFrame implements MouseListener {
 	public void mousePressed(MouseEvent event) {
 		if (SwingUtilities.isLeftMouseButton(event)) {
 			try {
-				controller.play(event.getPoint(), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
+				controller.play(Utils.javaPointToPoint(event.getPoint()), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
 			} catch (AWTException e) {
 				e.printStackTrace();
 			}
 		}
 		else if (SwingUtilities.isRightMouseButton(event)) {
 			try {
-				controller.cheat(event.getPoint(), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
+				controller.cheat(Utils.javaPointToPoint(event.getPoint()), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
 			} catch (AWTException e) {
 				e.printStackTrace();
 			}

@@ -1,7 +1,6 @@
 package board;
 
-import java.awt.Point;
-
+import utils.Point;
 import utils.Utils;
 
 public class QuadTree {
@@ -13,6 +12,9 @@ public class QuadTree {
 	public QuadTree(Point coordinates, boolean isLeave) {
 		this.coordinates = coordinates;
 		this.isLeave = isLeave;
+		if (!isLeave) {
+			this.subTrees = new QuadTree[4];
+		}
 	}
 	
 	public void addSubTree(int number, QuadTree subTree) {
@@ -27,6 +29,16 @@ public class QuadTree {
 	
 	public Point getCoordinates() {
 		return this.coordinates;
+	}
+	
+	public static void toString(QuadTree tree) {
+		System.out.println(tree.getCoordinates().toString());
+		if (!tree.isLeave) {
+			QuadTree.toString(tree.subTrees[0]);
+			QuadTree.toString(tree.subTrees[1]);
+			QuadTree.toString(tree.subTrees[2]);
+			QuadTree.toString(tree.subTrees[3]);
+		}
 	}
 
 }

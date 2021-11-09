@@ -1,5 +1,7 @@
 package application;
 
+import java.awt.Color;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -9,11 +11,8 @@ import java.nio.file.Files;
 import java.util.List;
 
 import board.SelectableRule;
+import utils.Point;
 import utils.Utils;
-
-import java.awt.Color;
-import java.awt.Point;
-
 
 public class Controller {
 
@@ -55,9 +54,9 @@ public class Controller {
 	}
 
 	public void play(Point clickedPoint, Color color) {
-		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, Utils.translate(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
-			int i = (clickedPoint.x - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.x) / (View.SQUARE_SIZE + 1);
-			int j = (clickedPoint.y - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.y) / (View.SQUARE_SIZE + 1);
+		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_TOP_LEFT_CORNER.translate(View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
+			int i = (int) ((clickedPoint.getX() - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.getX()) / (View.SQUARE_SIZE + 1));
+			int j = (int) ((clickedPoint.getY() - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.getY()) / (View.SQUARE_SIZE + 1));
 			model.play(i, j);
 		}
 	}
@@ -75,9 +74,9 @@ public class Controller {
 	}
 	
 	public void cheat(Point clickedPoint, Color color) {
-		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, Utils.translate(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
-			int i = (clickedPoint.x - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.x) / (View.SQUARE_SIZE + 1);
-			int j = (clickedPoint.y - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.y) / (View.SQUARE_SIZE + 1);
+		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_TOP_LEFT_CORNER.translate(View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
+			int i = (int) ((clickedPoint.getX() - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.getX()) / (View.SQUARE_SIZE + 1));
+			int j = (int) ((clickedPoint.getY() - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.getY()) / (View.SQUARE_SIZE + 1));
 			model.cheat(i, j);
 		}
 	}

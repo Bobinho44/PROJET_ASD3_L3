@@ -1,11 +1,12 @@
 package board;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import application.Model;
 import application.View;
+import utils.Point;
 import utils.Utils;
 
 public class GameBoard {
@@ -112,44 +113,36 @@ public class GameBoard {
 	}
 	
 	public QuadTree createAllRegions(Point center, int heigth) {
-		if (heigth == (int) (Math.log(View.GAMEBOARD_SIZE) / Math.log(2))) {
+		int puissance = (int) (Math.log(Model.boardSize) / Math.log(2)) - 1;
+		if (heigth >= puissance) {
 			return new QuadTree(center, true);
 		}
 		else {
 			QuadTree bigRegion = new QuadTree(center, false);
-			int a = (int) (((int) center.x) / Math.pow(2, heigth));
-			int b = (int) (Math.floor(center.x) / Math.pow(2, heigth));
-			int c = ((int) center.y) / 2;
-			int d = (int) (Math.floor(center.y) / 2);
-			//TODO CALCUL DES POS
-			bigRegion.addSubTree(0, new QuadTree(new Point(a,b), false));
-			bigRegion.addSubTree(1, new QuadTree(new Point(a,b), false));
-			bigRegion.addSubTree(2, new QuadTree(new Point(a,b), false));
-			bigRegion.addSubTree(3, new QuadTree(new Point(a,b), false));
+			float littleValue = (float) (center.getX() - 3 * ( (Math.pow(2, puissance - heigth)) / 4));
+			float bigValue = (float) (center.getX() + 3 * ( (Math.pow(2, puissance - heigth)) / 4));
+			bigRegion.addSubTree(0, createAllRegions(new Point(littleValue, littleValue), heigth + 1));
+			bigRegion.addSubTree(1, createAllRegions(new Point(littleValue, bigValue), heigth + 1));
+			bigRegion.addSubTree(2, createAllRegions(new Point(bigValue, littleValue), heigth + 1));
+			bigRegion.addSubTree(3, createAllRegions(new Point(bigValue, bigValue), heigth + 1));
 			return bigRegion;
 		}
 	}
 	
-	public boolean parcours(int i, int j, QuadTree tree, SelectableColor color) {
+	public List<Square> parcours(int i, int j, QuadTree tree, SelectableColor color) {
 		if (tree.isLeave()) {
-			List<Square> littleRegionSquare = getNeighbors(tree.getCoordinates().x, tree.getCoordinates().y, "Brave");
-			if (littleRegionSquare.size() == 8) {
-				setSquaresColor(littleRegionSquare, color);
-				for (Square square : littleRegionSquare ) {
-					square.setIsAcquired(true);
-				}
-				return true;
-			}
-			return false;
+			return getNeighbors((int) tree.getCoordinates().getX(), (int) tree.getCoordinates().getY(), "Brave");
 			
 		}
 		else {
-			//TODO
+			//TODO choisir le bon subQuadtree
 			QuadTree selectedTree = null;
-			if (parcours(i, j, selectedTree, color)) {
-				//acquired all
+			List<Square> acquiredSquare = parcours(i, j, selectedTree, color);
+			if (acquiredSquare.size() > 8) {
+				//une sous region a été acquis donc on regarde si toutes les cases des sous regions sont coloré
+				//les subTree sont acquis (si une region est entièrement coloré au lancement, on la met acquis mais blanche)
 			}
-			return false;
+			return null;
 		}
 	}
 	/*public Region createBoard(Point p1, Point p2) { 
