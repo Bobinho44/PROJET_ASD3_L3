@@ -131,12 +131,12 @@ public class GameBoard {
 	
 	public List<Square> parcours(int i, int j, QuadTree tree, SelectableColor color) {
 		if (tree.isLeave()) {
-			return getNeighbors((int) tree.getCoordinates().getX(), (int) tree.getCoordinates().getY(), "Brave");
+			return getNeighbors((int) tree.getX(), (int) tree.getY(), "Brave");
 			
 		}
 		else {
 			//TODO choisir le bon subQuadtree
-			QuadTree selectedTree = null;
+			QuadTree selectedTree = tree.getSubTree((i < tree.getX() ? 0 : 1) + (j < tree.getY() ? 0 : 2));
 			List<Square> acquiredSquare = parcours(i, j, selectedTree, color);
 			if (acquiredSquare.size() > 8) {
 				//une sous region a été acquis donc on regarde si toutes les cases des sous regions sont coloré

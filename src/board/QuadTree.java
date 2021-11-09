@@ -23,12 +23,24 @@ public class QuadTree {
 		}
 	}
 	
+	public QuadTree getSubTree(int number) {
+		return this.subTrees[number];
+	}
+	
 	public boolean isLeave() {
 		return this.isLeave;
 	}
 	
 	public Point getCoordinates() {
 		return this.coordinates;
+	}
+	
+	public float getX() {
+		return this.getCoordinates().getX();
+	}
+	
+	public float getY() {
+		return this.getCoordinates().getY();
 	}
 	
 	public static void toString(QuadTree tree) {
