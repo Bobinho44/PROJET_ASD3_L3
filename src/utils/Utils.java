@@ -15,7 +15,7 @@ public class Utils {
 	}
 	
 	public static boolean isBeetwen(int from, int to, int tested) {
-		return tested > from && tested < to;
+		return tested >= from && tested <= to;
 	}
 	
 	public static boolean isValidIndex(int x, int y, int maxX, int maxY) {
@@ -25,7 +25,7 @@ public class Utils {
 	public static boolean isValidGameBoardSize(String boardSize, int... expectedValue) {
 		if (boardSize != null && boardSize.matches("^[0-9]+$")) {
 			int boardSizeValue = Integer.valueOf(boardSize);
-			return isBeetwen(0, 100, boardSizeValue) && (boardSizeValue/3) % 2 == 0 && (expectedValue.length == 1 ? boardSizeValue == expectedValue[0] : true);
+			return isBeetwen(1, 99, boardSizeValue) && (boardSizeValue/3) % 2 == 0 && (expectedValue.length == 1 ? boardSizeValue == expectedValue[0] : true);
 		}
 		return false;
 	}

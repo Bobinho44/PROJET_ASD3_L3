@@ -12,6 +12,7 @@ public class GameBoard {
 
 	private Square[][] board;
 	private HashSet<Square> emptySquares;
+	private QuadTree regions;
 	private int[] score;
 	
 	public GameBoard(String boardGenerationSeed, int boardSize) {
@@ -98,6 +99,10 @@ public class GameBoard {
 					if (square.getColor() != SelectableColor.WHITE && !square.isAcquired()) {
 						neighbors.add(square);
 					}
+				case "Colored":
+					if (square.getColor() != SelectableColor.WHITE) {
+						neighbors.add(square);
+					}
 				default:
 					break;
 				}
@@ -106,6 +111,47 @@ public class GameBoard {
 		return neighbors;
 	}
 	
+	public QuadTree createAllRegions(Point center, int heigth) {
+		if (heigth == (int) (Math.log(View.GAMEBOARD_SIZE) / Math.log(2))) {
+			return new QuadTree(center, true);
+		}
+		else {
+			QuadTree bigRegion = new QuadTree(center, false);
+			int a = (int) (((int) center.x) / Math.pow(2, heigth));
+			int b = (int) (Math.floor(center.x) / Math.pow(2, heigth));
+			int c = ((int) center.y) / 2;
+			int d = (int) (Math.floor(center.y) / 2);
+			//TODO CALCUL DES POS
+			bigRegion.addSubTree(0, new QuadTree(new Point(a,b), false));
+			bigRegion.addSubTree(1, new QuadTree(new Point(a,b), false));
+			bigRegion.addSubTree(2, new QuadTree(new Point(a,b), false));
+			bigRegion.addSubTree(3, new QuadTree(new Point(a,b), false));
+			return bigRegion;
+		}
+	}
+	
+	public boolean parcours(int i, int j, QuadTree tree, SelectableColor color) {
+		if (tree.isLeave()) {
+			List<Square> littleRegionSquare = getNeighbors(tree.getCoordinates().x, tree.getCoordinates().y, "Brave");
+			if (littleRegionSquare.size() == 8) {
+				setSquaresColor(littleRegionSquare, color);
+				for (Square square : littleRegionSquare ) {
+					square.setIsAcquired(true);
+				}
+				return true;
+			}
+			return false;
+			
+		}
+		else {
+			//TODO
+			QuadTree selectedTree = null;
+			if (parcours(i, j, selectedTree, color)) {
+				//acquired all
+			}
+			return false;
+		}
+	}
 	/*public Region createBoard(Point p1, Point p2) { 
 		if (p1.x - p1.x <= 3) {
 			return new LittleRegion(new Point((p2.x - p1.x) / 2, (p2.y - p1.y) / 2), Color.White);
