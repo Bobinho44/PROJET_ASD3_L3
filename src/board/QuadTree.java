@@ -5,14 +5,15 @@ import utils.Utils;
 
 public class QuadTree {
 
-	private boolean isLeave;
+	private int level;
 	private QuadTree[] subTrees;
 	private Point coordinates;
+	private SelectableColor acquiredColor;
 	
-	public QuadTree(Point coordinates, boolean isLeave) {
+	public QuadTree(Point coordinates, int level) {
 		this.coordinates = coordinates;
-		this.isLeave = isLeave;
-		if (!isLeave) {
+		this.level = level;
+		if (level != 0) {
 			this.subTrees = new QuadTree[4];
 		}
 	}
@@ -28,7 +29,11 @@ public class QuadTree {
 	}
 	
 	public boolean isLeave() {
-		return this.isLeave;
+		return getLevel() == 0;
+	}
+	
+	public int getLevel() {
+		return this.level;
 	}
 	
 	public Point getCoordinates() {
@@ -43,9 +48,25 @@ public class QuadTree {
 		return this.getCoordinates().getY();
 	}
 	
+	public SelectableColor getAcquiredColor() {
+		return this.acquiredColor;
+	}
+	
+	public boolean isAcquired() {
+		return getAcquiredColor() != null;
+	}
+	
+	public void acquired(SelectableColor acquiredColor) {
+		this.acquiredColor = acquiredColor;
+	}
+	
+	public String toString() {
+		QuadTree.toString(this);
+		return "";
+	}
 	public static void toString(QuadTree tree) {
 		System.out.println(tree.getCoordinates().toString());
-		if (!tree.isLeave) {
+		if (!tree.isLeave()) {
 			QuadTree.toString(tree.subTrees[0]);
 			QuadTree.toString(tree.subTrees[1]);
 			QuadTree.toString(tree.subTrees[2]);

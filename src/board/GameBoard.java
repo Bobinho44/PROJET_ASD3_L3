@@ -115,45 +115,54 @@ public class GameBoard {
 	public QuadTree createAllRegions(Point center, int heigth) {
 		int puissance = (int) (Math.log(Model.boardSize) / Math.log(2)) - 1;
 		if (heigth >= puissance) {
-			return new QuadTree(center, true);
+			return new QuadTree(center, puissance - heigth);
 		}
 		else {
-			QuadTree bigRegion = new QuadTree(center, false);
-			float littleValue = (float) (center.getX() - 3 * ( (Math.pow(2, puissance - heigth)) / 4));
-			float bigValue = (float) (center.getX() + 3 * ( (Math.pow(2, puissance - heigth)) / 4));
-			bigRegion.addSubTree(0, createAllRegions(new Point(littleValue, littleValue), heigth + 1));
-			bigRegion.addSubTree(1, createAllRegions(new Point(littleValue, bigValue), heigth + 1));
-			bigRegion.addSubTree(2, createAllRegions(new Point(bigValue, littleValue), heigth + 1));
-			bigRegion.addSubTree(3, createAllRegions(new Point(bigValue, bigValue), heigth + 1));
+			QuadTree bigRegion = new QuadTree(center, puissance - heigth);
+			float littleValueX = (float) (center.getX() - 3 * ( (Math.pow(2, puissance - heigth)) / 4));
+			float bigValueX = (float) (center.getX() + 3 * ( (Math.pow(2, puissance - heigth)) / 4));
+			float littleValueY = (float) (center.getY() - 3 * ( (Math.pow(2, puissance - heigth)) / 4));
+			float bigValueY = (float) (center.getY() + 3 * ( (Math.pow(2, puissance - heigth)) / 4));
+			bigRegion.addSubTree(0, createAllRegions(new Point(littleValueX, littleValueY), heigth + 1));
+			bigRegion.addSubTree(1, createAllRegions(new Point(bigValueX, littleValueY), heigth + 1));
+			bigRegion.addSubTree(2, createAllRegions(new Point(littleValueX, bigValueY), heigth + 1));
+			bigRegion.addSubTree(3, createAllRegions(new Point(bigValueX, bigValueY), heigth + 1));
 			return bigRegion;
 		}
 	}
-	
-	public List<Square> parcours(int i, int j, QuadTree tree, SelectableColor color) {
+	public QuadTree parcours(int i, int j, QuadTree tree) {
+		if (tree.isLeave()) {
+			return tree;
+		}
+		return parcours(i, j, tree.getSubTree((i < tree.getX() ? 0 : 1) + (j < tree.getY() ? 0 : 2)));
+	}
+			
+	public List<Square> getAcquiredSquares(int i, int j, QuadTree tree, SelectableColor color) {
 		if (tree.isLeave()) {
 			return getNeighbors((int) tree.getX(), (int) tree.getY(), "Brave");
 			
 		}
 		else {
-			//TODO choisir le bon subQuadtree
-			QuadTree selectedTree = tree.getSubTree((i < tree.getX() ? 0 : 1) + (j < tree.getY() ? 0 : 2));
-			List<Square> acquiredSquare = parcours(i, j, selectedTree, color);
+			int selectedTreeNumber = (i < tree.getX() ? 0 : 1) + (j < tree.getY() ? 0 : 2);
+			List<Square> acquiredSquare = getAcquiredSquares(i, j, tree.getSubTree(selectedTreeNumber), color);
 			if (acquiredSquare.size() > 8) {
+				int[] whoAcquired = new int[3];
+				for (int k= 0; k < 4 && selectedTreeNumber != k; k++) {
+					if (tree.getSubTree(k).isAcquired()) {
+						whoAcquired[tree.getSubTree(k).getAcquiredColor().getPlayerNumber()]++;
+					}
+				}
+				if (whoAcquired[0] + whoAcquired[1] + whoAcquired[2] == 3) {
+					int size = (int) (3 * Math.pow(2, tree.getLevel()));
+					for (int x = 0; x < Math.pow(size, 2); x++) {
+						acquiredSquare.add(getSquare(i + (x / size - 1), j + (size % 3 - 1)));
+					}
+				}
 				//une sous region a été acquis donc on regarde si toutes les cases des sous regions sont coloré
 				//les subTree sont acquis (si une region est entièrement coloré au lancement, on la met acquis mais blanche)
 			}
-			return null;
+			return acquiredSquare;
 		}
 	}
-	/*public Region createBoard(Point p1, Point p2) { 
-		if (p1.x - p1.x <= 3) {
-			return new LittleRegion(new Point((p2.x - p1.x) / 2, (p2.y - p1.y) / 2), Color.White);
-		}
-		BigRegion region = new BigRegion(new Point((p2.x - p1.x) / 2, (p2.y - p1.y) / 2), Color.White);
-		region.setSubRegion(0, createBoard(p1, region.getCoordinates()));
-		region.setSubRegion(1, createBoard(region.getCoordinates(), new Point(p1.y, p2.x)));
-		region.setSubRegion(2, createBoard(new Point(p1.x, p2.y), region.getCoordinates()));
-		region.setSubRegion(3, createBoard(region.getCoordinates(), p2));
-		return region;
-	}*/
+	
 }

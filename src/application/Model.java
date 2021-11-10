@@ -64,7 +64,9 @@ public class Model {
 	//TODO continuer;
 	//actuellement juste récupération des cases adjacentes non acquise
 	public List<Square> getAffectedSquaresWithReckless(int i, int j) {
-		return view.getGameBoard().getNeighbors(i, j, "Reckless");
+		List<Square> affectedSquares = new ArrayList<Square>(view.getGameBoard().getNeighbors(i, j, "Reckless"));
+		List<Square> acquiredSquares = new ArrayList<Square>();
+		return acquiredSquares.size() > 9 ? acquiredSquares : affectedSquares;
 		
 		//utiliser int... acquired pour donner la position du premier acquired (potentiellement SelectableColor... acquiredColor
 		// Recherche dans le quadtree la case (i,j). Si cette case appartient à une petite region maintenant colorié -> 
@@ -79,15 +81,10 @@ public class Model {
 		Square selectedSquare = null;
 		int affectedSquares = 0;
 		for (Square square : view.getGameBoard().getEmptySquares()) {
-			if (square.getColor() == SelectableColor.WHITE) {
-				int affected =  getAffectedSquaresWithBrave(square.getX(), square.getY()).size();
-				if (affected >= affectedSquares) {
-					affectedSquares = affected;
-					selectedSquare = square;
-				}
-				if (affectedSquares == 9) {
-					return selectedSquare;
-				}
+			int affected =  getAffectedSquaresWithBrave(square.getX(), square.getY()).size();
+			if (affected >= affectedSquares) {
+				affectedSquares = affected;
+				selectedSquare = square;
 			}
 		}
 		return selectedSquare;
@@ -141,7 +138,13 @@ public class Model {
 			if (isStarted()) {
 				if (view.getGameBoard() == null) {
 					view.createGameBoard(getBoardGenerationSeed(), getBoardSize());
-					QuadTree.toString(view.getGameBoard().createAllRegions(new Point((float) (boardSize - 1)/2, (float) (boardSize - 1)/2), 0));
+					QuadTree tree = view.getGameBoard().createAllRegions(new Point((float) (boardSize - 1)/2, (float) (boardSize - 1)/2), 0);
+					tree.toString();
+					System.out.println(view.getGameBoard().parcours(38, 13, tree).toString());
+					view.getGameBoard().getSquare(38, 13).setColor(SelectableColor.RED);
+					Point point = view.getGameBoard().parcours(38, 13, tree).getCoordinates();
+					view.getGameBoard().getSquare((int) point.getX(), (int) point.getY()).setColor(SelectableColor.BLUE);
+					
 				}
 				view.update();
 			} else if (getBoardGenerationSeed() != null && getGameRule() != null) {

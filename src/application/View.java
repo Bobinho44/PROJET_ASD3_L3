@@ -103,9 +103,9 @@ public class View extends JFrame implements MouseListener {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
 		setVisible(true);	
-		//pack();
-		GAMEBOARD_SIZE = (int) (getWidth() / 2.4);
-		GAMEBOARD_TOP_LEFT_CORNER = new Point(getWidth() / 2 - GAMEBOARD_SIZE / 2, getHeight() / 2 - GAMEBOARD_SIZE / 2);
+		pack();
+		GAMEBOARD_SIZE = (int) (1440 / 2.4);
+		GAMEBOARD_TOP_LEFT_CORNER = new Point(1440 / 2 - GAMEBOARD_SIZE / 2, 746 / 2 - GAMEBOARD_SIZE / 2);
 		
 		//Creates the Scores panel.
 		JPanel panel = new JPanel(new GridLayout(0, 1));
