@@ -29,7 +29,7 @@ public class QuadTree {
 	}
 	
 	public boolean isLeave() {
-		return getLevel() == 0;
+		return this.subTrees == null;
 	}
 	
 	public int getLevel() {
@@ -58,6 +58,7 @@ public class QuadTree {
 	
 	public void acquired(SelectableColor acquiredColor) {
 		this.acquiredColor = acquiredColor;
+		this.subTrees = null;
 	}
 	
 	public String toString() {

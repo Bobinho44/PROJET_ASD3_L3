@@ -24,12 +24,9 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import java.util.List;
-
-import board.SelectableColor;
 import board.SelectableRule;
-import board.GameBoard;
 import board.Square;
+
 import utils.Point;
 import utils.Utils;
 
@@ -43,7 +40,6 @@ public class View extends JFrame implements MouseListener {
 	private Controller controller;
 	
 	private JPanel scorePanel;
-	private GameBoard gameBoard;
 	private DrawingPanel drawingPanel;
 
 	private ButtonGroup gameRuleGroup;
@@ -63,10 +59,6 @@ public class View extends JFrame implements MouseListener {
 		return this.scorePanel;
 	}
 	
-	public GameBoard getGameBoard() {
-		return this.gameBoard;
-	}
-	
 	public DrawingPanel getDrawingPanel() {
 		return this.drawingPanel;
 	}
@@ -83,9 +75,8 @@ public class View extends JFrame implements MouseListener {
 		return this.GameBoardFillingGroup;
 	}
 	
-	public void createGameBoard(String boardGenerationSeed, int boardSize) {
-		this.gameBoard = new GameBoard(boardGenerationSeed, boardSize);
-		this.drawingPanel.setGameBoard(gameBoard.getBoard());
+	public void setGameBoard(Square[][] gameBoard) {
+		this.drawingPanel.setGameBoard(gameBoard);
 	}
 	
 	private void build() {
@@ -103,9 +94,9 @@ public class View extends JFrame implements MouseListener {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
 		setVisible(true);	
-		pack();
-		GAMEBOARD_SIZE = (int) (1440 / 2.4);
-		GAMEBOARD_TOP_LEFT_CORNER = new Point(1440 / 2 - GAMEBOARD_SIZE / 2, 746 / 2 - GAMEBOARD_SIZE / 2);
+		//pack();
+		GAMEBOARD_SIZE = (int) (getWidth() / 2.4);
+		GAMEBOARD_TOP_LEFT_CORNER = new Point(getWidth()  / 2 - GAMEBOARD_SIZE / 2, getHeight() / 2 - GAMEBOARD_SIZE / 2);
 		
 		//Creates the Scores panel.
 		JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -221,40 +212,43 @@ public class View extends JFrame implements MouseListener {
 		return (AbstractButton) ((JMenuBar) getDrawingPanel().getComponents()[0]).getComponents()[i - 1];
 	}
 	
-	public void setSquaresColor(List<Square> squares, SelectableColor color) {
-		getGameBoard().setSquaresColor(squares, color);
-	}
-	
 	private JTextField getPlayerScore(int playerNumber) {
 		return (JTextField) getScorePanel().getComponents()[2 * playerNumber + 1];
 	}
 	
 	public void start() {
-		getMenuItem(3).setEnabled(false);
+		for (int i = 1; i < 4; i++)
+			getMenuItem(i).setEnabled(false);
 	}
 	
 	public void canStart() {
-		getMenuItem(3).setEnabled(true);
+		for (int i = 1; i < 4; i++)
+			getMenuItem(i).setEnabled(true);
 	}
 	
 	public void reset() {
-		this.gameBoard = null;
 		this.drawingPanel.setGameBoard(null);
 		this.gameRuleGroup.clearSelection();
 		this.AIGroupe.clearSelection();
 		this.GameBoardFillingGroup.clearSelection();
+		for (int i = 1; i < 3; i++)
+			getMenuItem(i).setEnabled(true);
 		getMenuItem(3).setEnabled(false);
-		update();
+		update(new int[]{0, 0});
+	}
+	
+	public void cheat(int[] newScore) {
+		JOptionPane.showMessageDialog(this, "New estimated score:\n" + newScore[0] + " - "  + newScore[1], "Information", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/**
 	 * Submitting a request to refresh the view to the drawingPanel.
 	 * @see DrawingPanel
 	 */
-	public void update() {
+	public void update(int[] score) {
 		getDrawingPanel().repaint();
 		for (int i = 0; i < 2; i++) {
-			getPlayerScore(i).setText(getGameBoard() == null ? "0" : "" + getGameBoard().getScore()[i]);
+			getPlayerScore(i).setText("" + score[i]);
 		}
 		
 	}
@@ -264,19 +258,11 @@ public class View extends JFrame implements MouseListener {
 	 */
 	@Override
 	public void mousePressed(MouseEvent event) {
-		if (SwingUtilities.isLeftMouseButton(event)) {
-			try {
-				controller.play(Utils.javaPointToPoint(event.getPoint()), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
-			} catch (AWTException e) {
-				e.printStackTrace();
-			}
-		}
-		else if (SwingUtilities.isRightMouseButton(event)) {
-			try {
-				controller.cheat(Utils.javaPointToPoint(event.getPoint()), new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y));
-			} catch (AWTException e) {
-				e.printStackTrace();
-			}
+		try {
+			Color color = new Robot().getPixelColor(event.getLocationOnScreen().x, event.getLocationOnScreen().y);
+			controller.click(Utils.javaPointToPoint(event.getPoint()), color, SwingUtilities.isLeftMouseButton(event));
+		} catch (AWTException e) {
+			e.printStackTrace();
 		}
 	}
 	

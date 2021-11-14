@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import application.Model;
 import application.View;
 import utils.Point;
 import utils.Utils;
@@ -14,12 +13,12 @@ public class GameBoard {
 	private Square[][] board;
 	private HashSet<Square> emptySquares;
 	private QuadTree regions;
-	private int[] score;
+	public static int[] score;
 	
-	public GameBoard(String boardGenerationSeed, int boardSize) {
+	public GameBoard(String boardGenerationSeed, int boardSize, SelectableRule gameRule) {
 		this.board = new Square[boardSize][boardSize];
 		this.emptySquares = new HashSet<Square>();
-		this.score = new int[2];
+		GameBoard.score = new int[2];
 		
 		View.SQUARE_SIZE = (((View.GAMEBOARD_SIZE - 1) / boardSize)) - 1;
 		View.GAMEBOARD_SIZE = boardSize * (View.SQUARE_SIZE + 1) + 1;
@@ -36,15 +35,24 @@ public class GameBoard {
 				break;
 			}
 		}
+		if (gameRule == SelectableRule.RECKLESS) {
+			regions = createAllRegions(new Point((float) (getBoardSize() - 1)/2, (float) (getBoardSize() - 1)/2), 0);
+		}
 	}
 	
-	public void setSquaresColor(List<Square> squares, SelectableColor color) {
-		for (Square square : squares) {
+	public void setSquaresColor(PlayableMove move) {
+		setScore(move.getNewScore());
+		for (Square square : move.getAffectedSquares()) {
+			if (move.hasAcquired()) {
+				square.setIsAcquired(true);
+			}
 			if (square.getColor() == SelectableColor.WHITE) {
 				removeEmptySquare(square);
 			}
-			updateScore(color.getPlayerNumber(), square.getColor().getPlayerNumber());
-			square.setColor(color);
+			square.setColor(move.getColor());
+		}
+		if (move.hasAcquired()) {
+			move.getLargestRegionAcquired().acquired(move.getColor());
 		}
 	}
 	
@@ -65,7 +73,11 @@ public class GameBoard {
 	}
 	
 	public int[] getScore() {
-		return this.score;
+		return GameBoard.score;
+	}
+	
+	public void setScore(int[] score) {
+		GameBoard.score = score;
 	}
 	
 	public void updateScore(int winnerPlayerNumber, int looserPlayerNumber) {
@@ -97,9 +109,10 @@ public class GameBoard {
 					}
 					break;
 				case "Reckless":
-					if (square.getColor() != SelectableColor.WHITE && !square.isAcquired()) {
+					if (square.getX() == i && square.getY() == j || (square.getColor() != SelectableColor.WHITE && !square.isAcquired())) {
 						neighbors.add(square);
 					}
+					break;
 				case "Colored":
 					if (square.getColor() != SelectableColor.WHITE) {
 						neighbors.add(square);
@@ -113,7 +126,7 @@ public class GameBoard {
 	}
 	
 	public QuadTree createAllRegions(Point center, int heigth) {
-		int puissance = (int) (Math.log(Model.boardSize) / Math.log(2)) - 1;
+		int puissance = (int) (Math.log(getBoardSize()) / Math.log(2)) - 1;
 		if (heigth >= puissance) {
 			return new QuadTree(center, puissance - heigth);
 		}
@@ -130,38 +143,42 @@ public class GameBoard {
 			return bigRegion;
 		}
 	}
-	public QuadTree parcours(int i, int j, QuadTree tree) {
+		
+	// IA pas bete
+	public PlayableMove getAcquiredSquares(int i, int j, SelectableColor color, QuadTree... usedTree) {
+		QuadTree tree = usedTree.length == 1 ? usedTree[0] : regions;
 		if (tree.isLeave()) {
-			return tree;
-		}
-		return parcours(i, j, tree.getSubTree((i < tree.getX() ? 0 : 1) + (j < tree.getY() ? 0 : 2)));
-	}
-			
-	public List<Square> getAcquiredSquares(int i, int j, QuadTree tree, SelectableColor color) {
-		if (tree.isLeave()) {
-			return getNeighbors((int) tree.getX(), (int) tree.getY(), "Brave");
+			List<Square> affectedSquare = getNeighbors((int) tree.getX(), (int) tree.getY(), "Colored");
+			affectedSquare.add(getSquare(i, j));
+			return new PlayableMove(affectedSquare.size() > 8 ? tree : null, affectedSquare, color);
 			
 		}
 		else {
 			int selectedTreeNumber = (i < tree.getX() ? 0 : 1) + (j < tree.getY() ? 0 : 2);
-			List<Square> acquiredSquare = getAcquiredSquares(i, j, tree.getSubTree(selectedTreeNumber), color);
-			if (acquiredSquare.size() > 8) {
-				int[] whoAcquired = new int[3];
-				for (int k= 0; k < 4 && selectedTreeNumber != k; k++) {
+			PlayableMove move = getAcquiredSquares(i, j, color, tree.getSubTree(selectedTreeNumber));
+			if (move.hasAcquired()) {
+				int[] whoAcquired = new int[2];
+				for (int k= 0; k < 4; k++) {
 					if (tree.getSubTree(k).isAcquired()) {
 						whoAcquired[tree.getSubTree(k).getAcquiredColor().getPlayerNumber()]++;
 					}
 				}
-				if (whoAcquired[0] + whoAcquired[1] + whoAcquired[2] == 3) {
-					int size = (int) (3 * Math.pow(2, tree.getLevel()));
-					for (int x = 0; x < Math.pow(size, 2); x++) {
-						acquiredSquare.add(getSquare(i + (x / size - 1), j + (size % 3 - 1)));
+				if (whoAcquired[0] + whoAcquired[1] == 3 && tree.getLevel() - 1 == move.getLargestRegionAcquired().getLevel()) {
+					move.setLargestRegionAcquired(tree);
+					move.setColor(whoAcquired[color.getPlayerNumber()] > 0 ? color : SelectableColor.getColorFromInt(1 - color.getPlayerNumber()));
+					for (int k= 0; k < 4; k++) {
+						if (k == selectedTreeNumber)
+							continue;
+						int size = (int) (3 * Math.pow(2, tree.getSubTree(k).getLevel()));
+						for (int x = 0; x < Math.pow(size, 2); x++) {
+							float translation = (x / size + (-size + 1) / 2);
+							Square square = getSquare((int) (tree.getSubTree(k).getX() + translation), (int) (tree.getSubTree(k).getY() + translation));
+							move.addAffectedSquare(square);
+						}
 					}
 				}
-				//une sous region a été acquis donc on regarde si toutes les cases des sous regions sont coloré
-				//les subTree sont acquis (si une region est entièrement coloré au lancement, on la met acquis mais blanche)
 			}
-			return acquiredSquare;
+			return move;
 		}
 	}
 	

@@ -17,9 +17,9 @@ public class Application {
 		final Controller controller = new Controller(model); 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-			View view = new View("Cameleon");
-			model.linkView(view);
-			view.linkController(controller);
+				View view = new View("Cameleon");
+				model.linkView(view);
+				view.linkController(controller);
 			}
 		});
 		model.evolve();
