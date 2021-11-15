@@ -1,6 +1,7 @@
 package application;
 
 import java.awt.Color;
+
 import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
@@ -8,22 +9,40 @@ import javax.swing.JPanel;
 
 import board.Square;
 
+/**
+ * DrawingPanel is the class representing the drawing panel where the drawing part of the application will be managed.
+ * 
+ * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @version 1.0
+ */
 @SuppressWarnings("serial")
 public class DrawingPanel extends JPanel {
 		
-    // The list of shapes to be drawn.
+    //The game board to be drawn.
 	private Square[][] gameBoard;
 	
+	/**
+     * Creates the panel and its design.
+     */
 	public DrawingPanel() {
 		super();
 		setBackground(Color.lightGray);
 		setBorder(BorderFactory.createLineBorder(Color.lightGray));
 	}
 
+	/**
+     * Sets the game board to be drawn.
+     * @param gameBoard
+     *           Square[][] - The game board you want to draw.
+     * @see Square
+     */
 	public void setGameBoard(Square[][] gameBoard) {
 		this.gameBoard = gameBoard;
 	}
 
+	/**
+	 * Redefines the drawing method.
+	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (gameBoard != null) {

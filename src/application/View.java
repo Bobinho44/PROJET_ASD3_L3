@@ -94,10 +94,10 @@ public class View extends JFrame implements MouseListener {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
 		setVisible(true);	
-		//pack();
-		GAMEBOARD_SIZE = (int) (getWidth() / 2.4);
-		GAMEBOARD_TOP_LEFT_CORNER = new Point(getWidth()  / 2 - GAMEBOARD_SIZE / 2, getHeight() / 2 - GAMEBOARD_SIZE / 2);
-		
+		pack();
+		GAMEBOARD_SIZE = (int) (1440 / 2.4);
+		GAMEBOARD_TOP_LEFT_CORNER = new Point(1440  / 2 - GAMEBOARD_SIZE / 2, 746 / 2 - GAMEBOARD_SIZE / 2);
+	
 		//Creates the Scores panel.
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		add(panel, BorderLayout.WEST);
@@ -208,24 +208,46 @@ public class View extends JFrame implements MouseListener {
 		return textField;
 	}
 	
+	/**
+	 * Returns the i th menus of selections of the parameters to be able to modify them (block, clear the selection...).
+    * @param i
+     *           int - The menu number.
+     * @see AbstractButton
+	 */
 	private AbstractButton getMenuItem(int i) {
 		return (AbstractButton) ((JMenuBar) getDrawingPanel().getComponents()[0]).getComponents()[i - 1];
 	}
 	
+	/**
+	 * Returns the area where the player's score "playeNumber" is displayed, to be able to edit it.
+     * @param playerNumber
+     *           int - The player number (0, 1).
+     * @see JTextField
+	 */
 	private JTextField getPlayerScore(int playerNumber) {
 		return (JTextField) getScorePanel().getComponents()[2 * playerNumber + 1];
 	}
 	
+	/**
+	 * Remove from player the possibility to press the start button to start a game.
+	 */
 	public void start() {
 		for (int i = 1; i < 4; i++)
 			getMenuItem(i).setEnabled(false);
 	}
 	
+	/**
+	 * Gives the player the possibility to press the start button to start a game.
+	 */
 	public void canStart() {
 		for (int i = 1; i < 4; i++)
 			getMenuItem(i).setEnabled(true);
 	}
 	
+	/**
+	 * Resets the view and the game board settings.
+	 * The player can select his settings again.
+	 */
 	public void reset() {
 		this.drawingPanel.setGameBoard(null);
 		this.gameRuleGroup.clearSelection();
@@ -237,12 +259,19 @@ public class View extends JFrame implements MouseListener {
 		update(new int[]{0, 0});
 	}
 	
+	/**
+	 * Display the new potential score, calculated by cheating..
+     * @param newScore
+     *           int[] - The new score.
+	 */
 	public void cheat(int[] newScore) {
 		JOptionPane.showMessageDialog(this, "New estimated score:\n" + newScore[0] + " - "  + newScore[1], "Information", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/**
-	 * Submitting a request to refresh the view to the drawingPanel.
+	 * Submits a request to refresh the view to the drawingPanel.
+     * @param score
+     *           int[] - The new score.
 	 * @see DrawingPanel
 	 */
 	public void update(int[] score) {
@@ -250,11 +279,16 @@ public class View extends JFrame implements MouseListener {
 		for (int i = 0; i < 2; i++) {
 			getPlayerScore(i).setText("" + score[i]);
 		}
-		
 	}
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * Detects a click and sends the Controller various information  
+	 * like the coordinates of the click or the color of the clicked pixel.
+	 * @see Color
+	 * @see Controller
+	 * 
 	 */
 	@Override
 	public void mousePressed(MouseEvent event) {

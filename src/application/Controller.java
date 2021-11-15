@@ -14,22 +14,40 @@ import board.SelectableRule;
 import utils.Point;
 import utils.Utils;
 
+/**
+ * The controller class processes user requests and synchronizes the Model and the View.
+ * 
+ * @see Model
+ * @see View
+ * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @version 1.0
+ */
 public class Controller {
 
+	//Model contains the application data and logic for manipulate this data.
 	private Model model;
 
+	/**
+	 * Creates Controller that processes user requests and synchronizes the Model and the View 
+	 * and creates a link from Controller to Model.
+     * @param model
+     *           Model - The model that contains the application data and the logic to manipulate this data.
+     * @see Model
+	 */
 	public Controller(Model model) {
 		this.model = model;
 	}
 	
-	public boolean setBoardSize(String boardSize) {
-		if (Utils.isValidGameBoardSize(boardSize)) {
-			model.setBoardSize(Integer.valueOf(boardSize));
-			return true;
-		}
-		return false;
-	}
-	
+	/**
+	 * Checks if the input file is valid or not. If everything went well, the generation seed is transmitted to the Model.
+	 * Otherwise the View is informed that there is a problem.
+     * @param boardFillingFile
+     *           File - A file containing the representation of a game board in text format.
+     * @return boolean - A boolean indicating whether the input file was valid or not.
+     * @See Model
+     * @see View
+     * @see File
+	 */
 	public boolean setBoardGenerationSeed(File boardFillingFile) {
 		String boardGenerationSeed = "";
 		try {
@@ -52,7 +70,67 @@ public class Controller {
 		model.setBoardGenerationSeed(boardGenerationSeed);
 		return true;
 	}
-
+	
+	/**
+	 * Transmits the selected game rule to the Model.
+     * @param gameRule
+     *           SeletableRule - The
+     *            selected game rule.
+     * @See Model
+     * @see SelectableRule
+	 */
+	public void setGameRule(SelectableRule gameRule) {
+		model.setGameRule(gameRule);
+	}
+	
+	/**
+	 * Checks if the input board size is valid or not. If everything went well, the board size is transmitted to the Model.
+	 * Otherwise the View is informed that there is a problem.
+     * @param boardSize
+     *           String - A representation of the number of squares per side of the game board.
+     * @return boolean - A boolean indicating whether the input board size was valid or not.
+     * @See Model
+     * @see View
+     * @see String
+	 */
+	public boolean setBoardSize(String boardSize) {
+		if (Utils.isValidGameBoardSize(boardSize)) {
+			model.setBoardSize(Integer.valueOf(boardSize));
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Tells the Model to start the game.
+     * @See Model
+	 */
+	public void start() {
+		model.start();
+	}
+	
+	/**
+	 * Tells the Model to reset the game board.
+     * @See Model
+	 */
+	public void reset() {
+		model.reset();
+	}
+	
+	/**
+	 * Checks if the clicked point belongs to the game board, and if this square is playable (white).
+	 * If the player has right-clicked, the Model is asked to preview the future score using this square.
+	 * Otherwise we ask the Model to play on this square.
+     * @param clickedPoint
+     *           Point - The position where you clicked.
+     * @param color
+     *           Color - The color of the pixel clicked on.
+     * @param isLeftClick
+     *           boolean - A representation of the type of click (right or left).          
+     * @See Model
+     * @see Color
+     * @see Point
+	 */
 	public void click(Point clickedPoint, Color color, boolean isLeftClick) {
 		if (Utils.isBeetwen(View.GAMEBOARD_TOP_LEFT_CORNER, View.GAMEBOARD_TOP_LEFT_CORNER.translate(View.GAMEBOARD_SIZE), clickedPoint) && color.equals(Color.WHITE)) {
 			int i = (int) ((clickedPoint.getX() - 1 - View.GAMEBOARD_TOP_LEFT_CORNER.getX()) / (View.SQUARE_SIZE + 1));
@@ -62,18 +140,6 @@ public class Controller {
 			else
 				model.cheat(i, j);
 		}
-	}
-	
-	public void setGameRule(SelectableRule gameRule) {
-		model.setGameRule(gameRule);
-	}
-	
-	public void start() {
-		model.start();
-	}
-	
-	public void reset() {
-		model.reset();
 	}
 	
 }

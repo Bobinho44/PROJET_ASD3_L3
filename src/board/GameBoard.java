@@ -15,6 +15,9 @@ public class GameBoard {
 	private QuadTree regions;
 	public static int[] score;
 	
+	/*
+	 * RemplirPlateau
+	 */
 	public GameBoard(String boardGenerationSeed, int boardSize, SelectableRule gameRule) {
 		this.board = new Square[boardSize][boardSize];
 		this.emptySquares = new HashSet<Square>();
