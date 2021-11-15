@@ -47,7 +47,7 @@ public class GameBoard {
 		setScore(move.getNewScore());
 		for (Square square : move.getAffectedSquares()) {
 			if (move.hasAcquired()) {
-				square.setIsAcquired(true);
+				square.acquired(true);
 			}
 			if (square.getColor() == SelectableColor.WHITE) {
 				removeEmptySquare(square);
@@ -170,12 +170,13 @@ public class GameBoard {
 					move.setLargestRegionAcquired(tree);
 					move.setColor(whoAcquired[color.getPlayerNumber()] > 0 ? color : SelectableColor.getColorFromInt(1 - color.getPlayerNumber()));
 					for (int k= 0; k < 4; k++) {
-						if (k == selectedTreeNumber)
+						if (k == selectedTreeNumber) {
 							continue;
+						}
 						int size = (int) (3 * Math.pow(2, tree.getSubTree(k).getLevel()));
 						for (int x = 0; x < Math.pow(size, 2); x++) {
-							float translation = (x / size + (-size + 1) / 2);
-							Square square = getSquare((int) (tree.getSubTree(k).getX() + translation), (int) (tree.getSubTree(k).getY() + translation));
+							QuadTree subTree = tree.getSubTree(k);
+							Square square = getSquare((int) (subTree.getX() + x / size + (-size + 1) / 2), (int) (subTree.getY() + x % size + (-size + 1) / 2));
 							move.addAffectedSquare(square);
 						}
 					}

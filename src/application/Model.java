@@ -2,6 +2,7 @@ package application;
 
 import board.GameBoard;
 import board.PlayableMove;
+import board.SelectableAI;
 import board.SelectableColor;
 import board.SelectableRule;
 import board.Square;
@@ -12,6 +13,7 @@ import board.Square;
  * @author Kylian GERARD and Quentin GOMES DOS RIES
  * @version 1.0
  */
+//TODO Add new AI
 public class Model {
 	
 	/*
@@ -19,7 +21,8 @@ public class Model {
 	 */
 	private String boardGenerationSeed;
 	private SelectableRule gameRule;
-	public int boardSize;
+	private SelectableAI AI;
+	private int boardSize;
 	
 	/*
 	 * Fields of game parameters.
@@ -57,7 +60,7 @@ public class Model {
 	public void setBoardGenerationSeed(String boardGenerationSeed) {
 		this.boardGenerationSeed = boardGenerationSeed;
 		this.boardSize = (int) Math.sqrt(boardGenerationSeed.length());
-		view.canStart();
+		this.canStart();
 	}
 
 	/**
@@ -69,6 +72,46 @@ public class Model {
 	}
 	
 	/**
+	 * Defines the game rule.
+     * @param gameRule
+     *           SelectableRule - The rule used for the next game.
+     * @see SelectableRule
+	 */
+	public void setGameRule(SelectableRule gameRule) {
+		this.gameRule = gameRule;
+		this.canStart();
+	}
+	
+	/**
+     * returns the game rule.
+     * @return SelectableRule - The selected game rule.
+     * @see SelectableRule
+	 */
+	public SelectableRule getGameRule() {
+		return this.gameRule;
+	}
+	
+	/**
+	 * Defines the AI.
+     * @param AI
+     *           SelectableAI - The AI used for the next game.
+     * @see SelectableAI
+	 */
+	public void setAI(SelectableAI AI) {
+		this.AI = AI;
+		this.canStart();
+	}
+	
+	/**
+     * returns the AI.
+     * @return SelectableAI - The selected game AI.
+     * @see SelectableAI
+	 */
+	public SelectableAI getAI() {
+		return this.AI;
+	}
+	
+	/**
 	 * Defines the board size.
      * @param boardSize
      *           int - The length in number of squares of one side of the board.
@@ -76,7 +119,7 @@ public class Model {
 	public void setBoardSize(int boardSize) {
 		this.boardSize = boardSize;
 		this.boardGenerationSeed = "";
-		view.canStart();
+		this.canStart();
 	}
 	
 	/**
@@ -85,25 +128,6 @@ public class Model {
      */
 	public int getBoardSize() {
 		return this.boardSize;
-	}
-	
-	/**
-	 * Defines the game rule.
-     * @param gameRule
-     *           SelectableRule - The rule used for the next game.
-     * @see SelectableColor
-	 */
-	public void setGameRule(SelectableRule gameRule) {
-		this.gameRule = gameRule;
-	}
-	
-	/**
-     * returns the game rule.
-     * @return SelectableRule - The selected game rule.
-     * @see SelectableColor
-	 */
-	public SelectableRule getGameRule() {
-		return this.gameRule;
 	}
 	
 	/**
@@ -126,6 +150,15 @@ public class Model {
 	 */
 	public GameBoard getGameBoard() {
 		return this.gameboard;
+	}
+	
+	/**
+     * Allows player to start a game.
+	 */
+	private void canStart() {
+		if (getBoardGenerationSeed() != null && getGameRule() != null && getAI() != null && getBoardSize() != 0) {
+			view.canStart();
+		}
 	}
 	
 	/**

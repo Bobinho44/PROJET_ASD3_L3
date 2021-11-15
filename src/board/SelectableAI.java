@@ -1,12 +1,12 @@
 package board;
 
-public enum SelectableRule {
-	BRAVE("Brave"),
-	RECKLESS("Reckless");
+public enum SelectableAI {
+	GLUTTONOUS("Gluttonous"),
+	SMART("Smart");
 	
 	private String name;
 	
-	private SelectableRule(String name) {
+	private SelectableAI(String name) {
 		this.name = name;	
 	}
 	

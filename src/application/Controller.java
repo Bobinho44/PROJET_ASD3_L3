@@ -10,6 +10,7 @@ import java.nio.file.Files;
 
 import java.util.List;
 
+import board.SelectableAI;
 import board.SelectableRule;
 import utils.Point;
 import utils.Utils;
@@ -74,13 +75,23 @@ public class Controller {
 	/**
 	 * Transmits the selected game rule to the Model.
      * @param gameRule
-     *           SeletableRule - The
-     *            selected game rule.
+     *           SeletableRule - The selected game rule.
      * @See Model
      * @see SelectableRule
 	 */
 	public void setGameRule(SelectableRule gameRule) {
 		model.setGameRule(gameRule);
+	}
+	
+	/**
+	 * Transmits the selected AI to the Model.
+     * @param AI
+     *           SeletableRule - The selected AI.
+     * @See Model
+     * @see SelectableAI
+	 */
+	public void setAI(SelectableAI AI) {
+		model.setAI(AI);
 	}
 	
 	/**

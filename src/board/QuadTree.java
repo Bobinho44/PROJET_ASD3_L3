@@ -60,19 +60,5 @@ public class QuadTree {
 		this.acquiredColor = acquiredColor;
 		this.subTrees = null;
 	}
-	
-	public String toString() {
-		QuadTree.toString(this);
-		return "";
-	}
-	public static void toString(QuadTree tree) {
-		System.out.println(tree.getCoordinates().toString());
-		if (!tree.isLeave()) {
-			QuadTree.toString(tree.subTrees[0]);
-			QuadTree.toString(tree.subTrees[1]);
-			QuadTree.toString(tree.subTrees[2]);
-			QuadTree.toString(tree.subTrees[3]);
-		}
-	}
 
 }
