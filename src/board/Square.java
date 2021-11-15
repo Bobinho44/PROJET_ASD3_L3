@@ -53,7 +53,7 @@ public class Square {
 		int y = (int) (View.GAMEBOARD_TOP_LEFT_CORNER.getY() + getY() * (View.SQUARE_SIZE + 1) + 1);
 		g.fillRect(x, y, View.SQUARE_SIZE, View.SQUARE_SIZE);
 		g.setColor(Color.BLACK);
-		g.setFont(new Font("TimesRoman", Font.PLAIN, View.SQUARE_SIZE/6)); 
+		//g.setFont(new Font("TimesRoman", Font.PLAIN, View.SQUARE_SIZE/6)); 
 		if (getY() == 0) g.drawString("" + (getX() + 1), x + View.SQUARE_SIZE / 2, y - 15);
 		if (getX() == 0) g.drawString("" + (getY() + 1), x - 25, y + View.SQUARE_SIZE / 2);
 	}

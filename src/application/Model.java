@@ -156,7 +156,7 @@ public class Model {
      * Allows player to start a game.
 	 */
 	private void canStart() {
-		if (getBoardGenerationSeed() != null && getGameRule() != null && getAI() != null && getBoardSize() != 0) {
+		if (getBoardGenerationSeed() != null && getGameRule() != null && (getAI() != null || getGameRule() == SelectableRule.BRAVE) && getBoardSize() != 0) {
 			view.canStart();
 		}
 	}
