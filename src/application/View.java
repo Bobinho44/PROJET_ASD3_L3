@@ -154,8 +154,8 @@ public class View extends JFrame implements MouseListener {
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
 		setVisible(true);	
 		pack();
-		GAMEBOARD_SIZE = (int) (getWidth() / 2.4);
-		GAMEBOARD_TOP_LEFT_CORNER = new Point(getWidth()  / 2 - GAMEBOARD_SIZE / 2, getHeight() / 2 - GAMEBOARD_SIZE / 2);
+		GAMEBOARD_SIZE = (int) (1440 / 2.4);
+		GAMEBOARD_TOP_LEFT_CORNER = new Point(1440  / 2 - GAMEBOARD_SIZE / 2, 900 / 2 - GAMEBOARD_SIZE / 2);
 	
 		//Creates the Scores panel.
 		JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -344,7 +344,7 @@ public class View extends JFrame implements MouseListener {
 	 */
 	public void reset() {
 		for (int i = 1; i < 5; i++) {
-			getMenuItem(i).setEnabled(i != 4 ? true : false);
+			getMenuItem(i).setEnabled(i != 4 && i != 2  ? true : false);
 		}
 		getDrawingPanel().setGameBoard(null);
 		getGameBoardFillingGroup().clearSelection();

@@ -135,10 +135,11 @@ public class GameBoard {
 		}
 		else {
 			QuadTree bigRegion = new QuadTree(center, puissance - heigth);
-			float littleValueX = (float) (center.getX() - 3 * ( (Math.pow(2, puissance - heigth)) / 4));
-			float bigValueX = (float) (center.getX() + 3 * ( (Math.pow(2, puissance - heigth)) / 4));
-			float littleValueY = (float) (center.getY() - 3 * ( (Math.pow(2, puissance - heigth)) / 4));
-			float bigValueY = (float) (center.getY() + 3 * ( (Math.pow(2, puissance - heigth)) / 4));
+			double translation = 3 * ( (Math.pow(2, puissance - heigth)) / 4);
+			float littleValueX = (float) (center.getX() - translation);
+			float bigValueX = (float) (center.getX() + translation);
+			float littleValueY = (float) (center.getY() - translation);
+			float bigValueY = (float) (center.getY() + translation);
 			bigRegion.addSubTree(0, createAllRegions(new Point(littleValueX, littleValueY), heigth + 1));
 			bigRegion.addSubTree(1, createAllRegions(new Point(bigValueX, littleValueY), heigth + 1));
 			bigRegion.addSubTree(2, createAllRegions(new Point(littleValueX, bigValueY), heigth + 1));

@@ -54,15 +54,11 @@ public class PlayableMove {
 		this.color = color;
 	}
 	
-	public int[] getNewScore() {
-		return calculateNewScore();
-	}
-	
 	public int getRelativeNewScore() {
 		return getNewScore()[getColor().getPlayerNumber()] - getNewScore()[1 - getColor().getPlayerNumber()];
 	}
 	
-	public int[] calculateNewScore() {
+	public int[] getNewScore() {
 		int[] newScore = GameBoard.score.clone();
 		for (Square square : getAffectedSquares()) {
 			if (square.getColor() == SelectableColor.getColorFromInt(1 - getColor().getPlayerNumber()))

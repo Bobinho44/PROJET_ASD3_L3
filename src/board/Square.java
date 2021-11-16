@@ -2,7 +2,6 @@ package board;
 
 import java.awt.Graphics;
 import java.awt.Color;
-import java.awt.Font;
 
 import application.View;
 import utils.Point;
