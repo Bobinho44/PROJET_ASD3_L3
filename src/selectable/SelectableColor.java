@@ -1,4 +1,4 @@
-package board;
+package selectable;
 
 import java.awt.Color;
 
@@ -9,9 +9,9 @@ import java.awt.Color;
  * @version 1.0
  */
 public enum SelectableColor {
-	RED('B', Color.RED, 0),
-	BLUE('R', Color.BLUE, 1),
-	WHITE('A', Color.WHITE, 2);
+	WHITE(2, Color.WHITE, 'A'),
+	BLUE(1, Color.BLUE, 'B'),
+	RED(0, Color.RED, 'R');
 	
 	//The associated player number.
 	private int playerNumber;
@@ -24,24 +24,24 @@ public enum SelectableColor {
 	
 	/**
 	 * Creates a new color.
-     * @param nameChar
-     *           char- The color's associated char.
-     * @param paintColor
-     *           Color- The color's associated drawing color.
      * @param playerNumber
-     *           int - The color's associated player number.              
+     *           int - The color's associated player number.
+     * @param paintColor
+     *           Color- The color's associated drawing color.       
+     * @param nameChar
+     *           char - The color's associated char.       
 	 * @see Color
 	 */
-	private SelectableColor(char nameChar, Color paintColor, int playerNumber) {
+	private SelectableColor(int playerNumber, Color paintColor, char nameChar) {
 		this.playerNumber = playerNumber;
 		this.paintColor = paintColor;
 		this.nameChar = nameChar;
 	}
 	
 	/**
-	 * Returns the Selectable color associated with a char.
-     * @param nameChar
-     *           char- The color's associated char.  
+	 * Returns the SelectableColor associated with a char.
+     * @param associatedChar
+     *           char - The color's associated char.  
      * @return SelectableColor - The color associated with the char.          
 	 */
 	public static SelectableColor getColorFromChar(char associatedChar) {
@@ -53,6 +53,12 @@ public enum SelectableColor {
 		return WHITE;
 	}
 	
+	/**
+	 * Returns the SelectableColor associated with an int.
+     * @param associatedInt
+     *           int - The color's associated int.  
+     * @return SelectableColor - The color associated with the int (player number).          
+	 */
 	public static SelectableColor getColorFromInt(int associatedInt) {
 		for (SelectableColor color : values()) {
 			if (color.getPlayerNumber() == associatedInt) {
@@ -62,14 +68,27 @@ public enum SelectableColor {
 		return WHITE;
 	}
 	
+	/**
+	 * Returns the color's associated player number.
+     * @return int - The color's associated player number.          
+	 */
 	public int getPlayerNumber() {
 		return this.playerNumber;
 	}
 	
+	/**
+	 * Returns the color's associated drawing color. 
+     * @return Color - The color's associated drawing color.    
+     * @see Color      
+	 */
 	public Color getPaintColor() {
 		return this.paintColor;
 	}
 	
+	/**
+	 * Returns the color's associated char.
+     * @return char - The color's associated char.          
+	 */
 	private char getNameChar() {
 		return this.nameChar;
 	}

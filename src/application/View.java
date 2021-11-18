@@ -24,10 +24,9 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import board.SelectableAI;
-import board.SelectableRule;
 import board.Square;
-
+import selectable.SelectableAI;
+import selectable.SelectableRule;
 import utils.Point;
 import utils.Utils;
 
@@ -153,7 +152,7 @@ public class View extends JFrame implements MouseListener {
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
 		setVisible(true);	
-		pack();
+		//pack();
 		GAMEBOARD_SIZE = (int) (1440 / 2.4);
 		GAMEBOARD_TOP_LEFT_CORNER = new Point(1440  / 2 - GAMEBOARD_SIZE / 2, 900 / 2 - GAMEBOARD_SIZE / 2);
 	
@@ -224,6 +223,7 @@ public class View extends JFrame implements MouseListener {
 				
 				//Checks if the size is valid
 				if (!controller.setBoardSize(JOptionPane.showInputDialog("Enter the board's size"))) {
+					canStart(false);
 					getGameBoardFillingGroup().clearSelection();	
 					JOptionPane.showMessageDialog(View.this, "The integer entered is not valid!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -240,7 +240,8 @@ public class View extends JFrame implements MouseListener {
 				JFileChooser fileDlg = new JFileChooser();
 				
 				//Checks if the file is valid
-				if (fileDlg.showOpenDialog(null) != JFileChooser.APPROVE_OPTION || !controller.setBoardGenerationSeed(fileDlg.getSelectedFile())) { 
+				if (fileDlg.showOpenDialog(null) != JFileChooser.APPROVE_OPTION || !controller.setBoardGenerationSeed(fileDlg.getSelectedFile())) {
+					canStart(false);
 					getGameBoardFillingGroup().clearSelection();
 					JOptionPane.showMessageDialog(View.this, "The file used is not valid!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -334,8 +335,8 @@ public class View extends JFrame implements MouseListener {
 	/**
 	 * Gives the player the possibility to press the start button to start a game.
 	 */
-	public void canStart() {
-		getMenuItem(4).setEnabled(true);
+	public void canStart(boolean canStart) {
+		getMenuItem(4).setEnabled(canStart);
 	}
 	
 	/**
@@ -354,7 +355,14 @@ public class View extends JFrame implements MouseListener {
 	}
 	
 	/**
-	 * Display the new potential score, calculated by cheating..
+	 * Shows if player one has won the game.
+	 */
+	public void finish(int[] score) {
+		JOptionPane.showMessageDialog(this, score[0] > score[1] ? "You Win!" : (score[0] == score[1] ? "Equality" : "You lose!"), "Result", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	/**
+	 * Displays the new potential score, calculated by cheating.
      * @param newScore
      *           int[] - The new score.
 	 */
@@ -374,7 +382,7 @@ public class View extends JFrame implements MouseListener {
 	}
 	
 	/**
-	 * Submits a request to refresh the view to the drawingPanel.
+	 * Submits a request to refresh the view to the drawingPanel and the score.
      * @param score
      *           int[] - The new score.
 	 * @see DrawingPanel

@@ -10,8 +10,8 @@ import java.nio.file.Files;
 
 import java.util.List;
 
-import board.SelectableAI;
-import board.SelectableRule;
+import selectable.SelectableAI;
+import selectable.SelectableRule;
 import utils.Point;
 import utils.Utils;
 

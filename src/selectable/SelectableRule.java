@@ -1,4 +1,4 @@
-package board;
+package selectable;
 
 /**
  * The SelectableRule enum contains all the rules the player can use.
