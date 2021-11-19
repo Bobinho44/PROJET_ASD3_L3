@@ -1,4 +1,4 @@
-package selectable;
+package fr.bobinho.cameleon.selectable;
 
 /**
  * The SelectableRule enum contains all the rules the player can use.

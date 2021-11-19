@@ -1,4 +1,4 @@
-package application;
+package fr.bobinho.cameleon.application;
 
 import javax.swing.SwingUtilities;
 
@@ -23,4 +23,5 @@ public class Application {
 			}
 		});
 	}
+
 }

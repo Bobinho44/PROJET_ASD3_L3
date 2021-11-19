@@ -1,11 +1,12 @@
-package board;
+package fr.bobinho.cameleon.board;
 
 import java.awt.Graphics;
-import java.awt.Color;
 
-import application.View;
-import selectable.SelectableColor;
-import utils.Point;
+import fr.bobinho.cameleon.application.View;
+import fr.bobinho.cameleon.selectable.SelectableColor;
+import fr.bobinho.cameleon.utils.Point;
+
+import java.awt.Color;
 
 /**
  * The Square class represents the squares of the game board.
@@ -15,6 +16,13 @@ import utils.Point;
  */
 public class Square {
 	
+	//The Square index in the empty little region list (if the Square is white).
+	private int emptyLittleRegionsNumber;
+	
+	
+	//The Square index in the empty square list (if the Square is white).
+	private int emptySquaresNumber;
+	
 	//The color of the Square (white is uncolored).
 	private SelectableColor color;
 	
@@ -23,10 +31,7 @@ public class Square {
 	
 	//The coordinates of the Square on the game board.
 	private Point coordinates;
-	
-	//The Square index in the empty square list (if the Square is white).
-	private int emptyNumber;
-	
+
 	/**
 	 * Creates a Square.
      * @param color
@@ -37,10 +42,45 @@ public class Square {
      * @see Point        
 	 */
 	public Square(SelectableColor color, Point coordinates) {
+		this.emptyLittleRegionsNumber = -1;
+		this.emptySquaresNumber = -1;
 		this.color = color;
 		this.isAcquired = false;
 		this.coordinates = coordinates;
-		this.emptyNumber = -1;
+	}
+	
+	/**
+	 * Sets the Square index in the empty little regions list.
+     * @param emptyNumber
+     *           int - The new empty list's little regions index.   
+	 */
+	public void setEmptyLittleRegionsNumber(int emptyLittleRegionsNumber) {
+		this.emptyLittleRegionsNumber = emptyLittleRegionsNumber;
+	}
+	
+	/**
+	 * Returns the Square index in the empty little regions list.
+     * @return int - The empty list's little regions index.   
+	 */
+	public int getEmptyLittleRegionsNumber() {
+		return this.emptyLittleRegionsNumber;
+	}
+	
+	/**
+	 * Sets the Square index in the empty squares list.
+     * @param emptyNumber
+     *           int - The new empty list's Squares index.   
+	 */
+	public void setEmptySquaresNumber(int emptySquaresNumber) {
+		this.emptySquaresNumber = emptySquaresNumber;
+	}
+	
+	/**
+	 * Returns the Square index in the empty squares list.
+     * @return int - The empty list's Squares index.   
+	 */
+	public int getEmptySquaresNumber() {
+		return this.emptySquaresNumber;
 	}
 	
 	/**
@@ -102,23 +142,6 @@ public class Square {
 	 */
 	public int getY() {
 		return (int) getCoordinates().getY();
-	}
-	
-	/**
-	 * Sets the Square index in the empty square list.
-     * @param emptyNumber
-     *           int - The new empty list's Square index.   
-	 */
-	public void setEmptyNumber(int emptyNumber) {
-		this.emptyNumber = emptyNumber;
-	}
-	
-	/**
-	 * Returns the Square index in the empty square list.
-     * @return int - The empty list's Square index.   
-	 */
-	public int getEmptyNumber() {
-		return this.emptyNumber;
 	}
 	
 	/**

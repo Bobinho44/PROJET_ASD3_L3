@@ -1,4 +1,4 @@
-package application;
+package fr.bobinho.cameleon.application;
 
 import java.awt.Color;
 
@@ -10,10 +10,11 @@ import java.nio.file.Files;
 
 import java.util.List;
 
-import selectable.SelectableAI;
-import selectable.SelectableRule;
-import utils.Point;
-import utils.Utils;
+import fr.bobinho.cameleon.selectable.SelectableAI;
+import fr.bobinho.cameleon.selectable.SelectableColor;
+import fr.bobinho.cameleon.selectable.SelectableRule;
+import fr.bobinho.cameleon.utils.Point;
+import fr.bobinho.cameleon.utils.Utils;
 
 /**
  * The controller class processes user requests and synchronizes the Model and the View.
@@ -51,18 +52,22 @@ public class Controller {
 	 */
 	public boolean setBoardGenerationSeed(File boardFillingFile) {
 		String boardGenerationSeed = "";
+		int score[] = new int[2];
 		try {
 			List<String> lines = Files.readAllLines(boardFillingFile.toPath(), StandardCharsets.UTF_8);
 			for (int i = 1; i < lines.size(); i++) {
 				for (int j = 0; j < lines.get(i).length(); j++) {
 					char testedChar = lines.get(i).charAt(j);
-					if (testedChar != 'R' && testedChar != 'B' && testedChar != 'A') {
+					if (testedChar == 'R' || testedChar == 'B') {
+						score[SelectableColor.getColorFromChar(testedChar).getPlayerNumber()]++;
+					}
+					else if (testedChar != 'A') {
 						return false;
 					}
 					boardGenerationSeed += testedChar;
 				}
 			}
-			if (!Utils.isValidGameBoardSize(lines.get(0), (int) Math.sqrt(boardGenerationSeed.length()))) {
+			if (!Utils.isValidGameBoardSize(lines.get(0), (int) Math.sqrt(boardGenerationSeed.length())) || score[0] != score[1]) {
 				return false;
 			}
 		} catch (IOException e) {

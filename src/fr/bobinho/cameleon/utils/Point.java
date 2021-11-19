@@ -1,4 +1,4 @@
-package utils;
+package fr.bobinho.cameleon.utils;
 
 /**
  * The Point class represents a point of dimension two on a plane.

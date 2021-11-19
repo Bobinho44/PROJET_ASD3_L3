@@ -1,4 +1,4 @@
-package selectable;
+package fr.bobinho.cameleon.selectable;
 
 import java.awt.Color;
 

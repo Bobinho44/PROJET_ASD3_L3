@@ -1,8 +1,8 @@
-package board;
+package fr.bobinho.cameleon.board;
 
-import selectable.SelectableColor;
-import utils.Point;
-import utils.Utils;
+import fr.bobinho.cameleon.selectable.SelectableColor;
+import fr.bobinho.cameleon.utils.Point;
+import fr.bobinho.cameleon.utils.Utils;
 
 /**
  * The QuadTree class in an abtraction of the game board region (and subregion).

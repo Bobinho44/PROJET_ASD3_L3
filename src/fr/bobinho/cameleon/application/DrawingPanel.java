@@ -1,4 +1,4 @@
-package application;
+package fr.bobinho.cameleon.application;
 
 import java.awt.Color;
 
@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import board.Square;
+import fr.bobinho.cameleon.board.Square;
 
 /**
  * DrawingPanel is the class representing the drawing panel where the drawing part of the application will be managed.

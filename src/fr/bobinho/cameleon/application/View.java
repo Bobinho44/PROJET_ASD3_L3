@@ -1,4 +1,4 @@
-package application;
+package fr.bobinho.cameleon.application;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
@@ -24,11 +24,11 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import board.Square;
-import selectable.SelectableAI;
-import selectable.SelectableRule;
-import utils.Point;
-import utils.Utils;
+import fr.bobinho.cameleon.board.Square;
+import fr.bobinho.cameleon.selectable.SelectableAI;
+import fr.bobinho.cameleon.selectable.SelectableRule;
+import fr.bobinho.cameleon.utils.Point;
+import fr.bobinho.cameleon.utils.Utils;
 
 /**
  * The View class is a graphical representation of the Model allowing interactions with users.

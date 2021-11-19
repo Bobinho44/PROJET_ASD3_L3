@@ -1,18 +1,14 @@
-package board;
+package fr.bobinho.cameleon.board;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import application.View;
-import selectable.SelectableColor;
-import selectable.SelectableRule;
-import utils.Point;
-import utils.Utils;
-
-/*TODO:
- * - Implémenter stratégie intelligente
- * - Peut être un petit problème au niveau de la couleur d'une grosse sous region ou on clique pour acquired, ça la modifie pas.
- */
+import fr.bobinho.cameleon.application.View;
+import fr.bobinho.cameleon.selectable.SelectableAI;
+import fr.bobinho.cameleon.selectable.SelectableColor;
+import fr.bobinho.cameleon.selectable.SelectableRule;
+import fr.bobinho.cameleon.utils.Point;
+import fr.bobinho.cameleon.utils.Utils;
 
 /**
  * The GameBoard class represents the game board including Squares (empty or not) and regions.
@@ -22,6 +18,9 @@ import utils.Utils;
  */
 public class GameBoard {
 
+	//The list with all empty little regions (colored in white).
+	private FastRemoveList emptyLittleRegions;
+	
 	//The list with all empty Squares (colored in white).
 	private FastRemoveList emptySquares;
 	
@@ -48,8 +47,9 @@ public class GameBoard {
      * @see String
      * @see SelectableRule
 	 */
-	public GameBoard(String boardGenerationSeed, SelectableRule gameRule, int boardSize) {
-		this.emptySquares = new FastRemoveList();
+	public GameBoard(String boardGenerationSeed, SelectableRule gameRule, SelectableAI IA, int boardSize) {
+		this.emptyLittleRegions = new FastRemoveList("Regions");
+		this.emptySquares = new FastRemoveList("Squares");
 		this.board = new Square[boardSize][boardSize];
 		this.score = new int[2];
 		
@@ -67,7 +67,7 @@ public class GameBoard {
 				addEmptySquare(getSquare(i / boardSize, i % boardSize));
 			}
 			else {
-				updateScore(color.getPlayerNumber(), SelectableColor.WHITE.getPlayerNumber());
+				updateScore(color.getPlayerNumber());
 			}
 		}
 		
@@ -76,10 +76,50 @@ public class GameBoard {
 			this.regions = createAllRegions(new Point((float) (getBoardSize() - 1)/2, (float) (getBoardSize() - 1)/2), 0);
 			
 			//Manages the regions potentially already acquired via the generation of the board by file.
-			if (!boardGenerationSeed.equals("")) {
-				acquiredInitialRegions();
+			if (!boardGenerationSeed.equals("") || IA == SelectableAI.SMART) {
+				acquiredInitialRegions(IA);
 			}
 		}
+	}
+	
+	/**
+	 * Adds a Square to the empty little regions list.
+     * @param added
+     *           Square - The added Square.   
+     * @see Square
+	 */
+	private void addEmptyLittleRegions(Square added) {
+		getEmptyLittleRegions().add(added);
+	}
+	
+	/**
+	 * Removes a Square from the empty little regions list.
+     * @param removed
+     *           Square - The removed Square.   
+     * @see Square
+	 */
+	private void removeEmptyLittleRegions(Square removed) {
+		getEmptyLittleRegions().remove(removed);
+	}
+	
+	/**
+	 * Returns the empty little regions data structure.
+     * @return FastRemoveList - The empty little regions's structure.  
+     * @see Square
+     * @see FastRemoveList
+	 */
+	private FastRemoveList getEmptyLittleRegions() {
+		return this.emptyLittleRegions;
+	}
+	
+	/**
+	 * Returns an iterable list of all empty little regions.
+     * @return List<Square> - The empty little regions's list.   
+     * @see Square
+     * @see List
+	 */
+	public List<Square> getIterableEmptyLittleRegions() {
+		return getEmptyLittleRegions().getSquares();
 	}
 	
 	/**
@@ -122,7 +162,6 @@ public class GameBoard {
 		return getEmptySquares().getSquares();
 	}
 	
-	
 	/**
 	 * Updates the Squares's color and region's color and manages acquired status and the score. 
      * @param move
@@ -149,6 +188,16 @@ public class GameBoard {
 		//Acquired the largest region affected by this move. This region become a leaf of the QuadTree.
 		if (move.hasAcquired()) {
 			move.getLargestRegionAcquired().acquired(move.getColor());
+			
+			//Removes the region from emptyLittleRegions list if the largest acquired region is 3x3 region.
+			if (move.getLargestRegionAcquired().getLevel() == 0) {
+				Square regionCenter = getSquare((int) move.getLargestRegionAcquired().getX(), (int) move.getLargestRegionAcquired().getY());
+				
+				//Checks if the region is in the empty little region list (used for initalises board with a file).
+				if (regionCenter.getEmptyLittleRegionsNumber() != -1) {
+					removeEmptyLittleRegions(regionCenter);
+				}
+			}
 		}
 	}
 	
@@ -242,11 +291,21 @@ public class GameBoard {
 						neighbors.add(square);
 					}
 					break;
-					
+				
+				//Returns the first finded uncolored neighbors.	
+				case "Uncolored":
+					if (square.getColor() == SelectableColor.WHITE) {
+						neighbors.add(square);
+						return neighbors;
+					}
+					break;
 				//Returns all neighbors with a specific color, condition must be a valid player number (between 0 and 2).
 				default:
 					if (square.getColor().getPlayerNumber() == Integer.valueOf(condition)) {
 						neighbors.add(square);
+					}
+					else {
+						return neighbors;
 					}
 					break;
 				}
@@ -299,13 +358,14 @@ public class GameBoard {
 	/**
 	 * Manages the regions potentially already acquired via the generation of the board by file. 
 	 */
-	public void acquiredInitialRegions() {
+	public void acquiredInitialRegions(SelectableAI IA) {
 		
 		//Checks all little region's center
 		for (int i = 0; i < Math.pow(getBoardSize() / 3, 2); i++) {
 			
 			//Gets little region center
 			Square littleRegionCenter = getSquare(3 * (i / (getBoardSize() / 3)) + 1, 3 * (i % (getBoardSize() / 3)) + 1);
+			boolean isAcquired = false;
 			
 			//Checks if a little region is totally colored with one color. If a region is totally colored with two colors, the region will not be acquired.
 			if (littleRegionCenter.getColor() != SelectableColor.WHITE) {
@@ -313,16 +373,19 @@ public class GameBoard {
 				
 				//The region must be acquired
 				if (neigbours.size() == 9) {
-					updateBoard(acquiredSquares(littleRegionCenter.getX(), littleRegionCenter.getY(), littleRegionCenter.getColor()));
+					isAcquired = true;
+					updateBoard(getAcquiredRegionSquares(getLargestAcquiredRegion(littleRegionCenter.getX(), littleRegionCenter.getY(), littleRegionCenter.getColor())));
 				}
 			}	
+			if (!isAcquired && IA == SelectableAI.SMART) {
+				addEmptyLittleRegions(littleRegionCenter);
+			}
 		}
 	}
 	
 	/**
-	 * RemplirRegion
-	 * Returns a move used with reckless rule to try to acquire regions.
-    * @param i
+	 * Returns a move used with reckless rule to find the largest acquired region by with this Square.
+     * @param i
      *           int - The x-coordinate of the selected Square.   
      * @param j
      *           int - The y-coordinate of the selected Square.
@@ -330,13 +393,13 @@ public class GameBoard {
      *           SelectableColor - The color of the player who played this move.
 	 * @param usedTree
      *           QuadTree... - The node of the tree. Used to browse the tree. (optionnal: will use the root of the tree otherwise).
-	 * @return PlayableMove - All information associated with the use this square with the reckless rule.
+	 * @return PlayableMove - All information about largest acquired region associated with the use of this square with the reckless rule.
 	 * @see SelectableColor
 	 * @see QuadTree
 	 * @see Square
 	 * @see PlayableMove
 	 */
-	public PlayableMove acquiredSquares(int i, int j, SelectableColor color, QuadTree... usedTree) {
+	public PlayableMove getLargestAcquiredRegion(int i, int j, SelectableColor color, QuadTree... usedTree) {
 		QuadTree tree = usedTree.length == 1 ? usedTree[0] : getRegions();
 		
 		//Checks if a little region will be totally colored with this move
@@ -345,7 +408,7 @@ public class GameBoard {
 			affectedSquare.add(getSquare(i, j));
 			
 			//Creates the begin of the move with an acquired region if necessary
-			return new PlayableMove(affectedSquare.size() > 8 ? tree : null, affectedSquare, color);
+			return new PlayableMove(affectedSquare.size() > 8 ? tree : null, color);
 			
 		}
 		
@@ -354,7 +417,7 @@ public class GameBoard {
 			
 			//The number of the selected sub tree according to the coordinates of the square you are looking for
 			int selectedTreeNumber = (i < tree.getX() ? 0 : 1) + (j < tree.getY() ? 0 : 2);
-			PlayableMove move = acquiredSquares(i, j, color, tree.getSubTree(selectedTreeNumber));
+			PlayableMove move = getLargestAcquiredRegion(i, j, color, tree.getSubTree(selectedTreeNumber));
 			
 			//If this move has generated an acquisition in a sub-region, we check if the current region should not also be acquired
 			if (move.hasAcquired()) {
@@ -374,25 +437,51 @@ public class GameBoard {
 					//This sub-region is acquired according to the R4-R5 rule
 					move.setLargestRegionAcquired(tree);
 					move.setColor(whoAcquired[color.getPlayerNumber()] > 0 ? color : SelectableColor.getColorFromInt(1 - color.getPlayerNumber()));
-					
-					//Acquired all sub-regions of this region without the one where the player has just played, being already added in the move, nor the sub regions
-					//already acquired by the right player
-					for (int k= 0; k < 4; k++) {
-						if (k != selectedTreeNumber &&  tree.getSubTree(k).getAcquiredColor() != move.getColor()) {
-							int size = (int) (3 * Math.pow(2, tree.getSubTree(k).getLevel()));
-							
-							//Gets all unacquired Squares of the sub-regions of the largest acquired region by the acquired player
-							for (int x = 0; x < Math.pow(size, 2); x++) {
-								QuadTree subTree = tree.getSubTree(k);
-								Square square = getSquare((int) (subTree.getX() + x / size + (-size + 1) / 2), (int) (subTree.getY() + x % size + (-size + 1) / 2));
-								move.addAffectedSquare(square);
-							}
-						}
-					}
 				}
 			}
 			return move;
 		}
+	}
+	
+	/**
+	 * RemplirRegion
+	 * Returns a move used with reckless rule containing the information of an acquisition (used to recover all the squares of the largest acquired region).
+     * @param acquiredMove
+     *           PlayableMove - The x-coordinate of the selected Square. 
+	 * @return PlayableMove - All information about largest acquiring region associated with the use of this square with the reckless rule.
+	 * @see PlayableMove
+	 */
+	public PlayableMove getAcquiredRegionSquares(PlayableMove acquiredMove) {
+		QuadTree tree = acquiredMove.getLargestRegionAcquired();
+		PlayableMove move = new PlayableMove(tree, acquiredMove.getColor());
+		
+		//Gets Squares of a little region.
+		if (tree.isLeaf()) {
+			for (int x = 0; x < 9; x++) {
+				move.addAffectedSquare(getSquare((int) tree.getX() + (x / 3 - 1), (int) tree.getY() + (x % 3 - 1)));
+			}
+		}
+		
+		//Gets Square of a big region.
+		else {
+			
+			//Loop all 4 sub-region
+			for (int k= 0; k < 4; k++) {
+				
+				//Checks if this sub tree is not already acquired by the player
+				if (tree.getSubTree(k).getAcquiredColor() != acquiredMove.getColor()) {
+					int size = (int) (3 * Math.pow(2, tree.getSubTree(k).getLevel()));
+					
+					//Gets all unacquired Squares of the sub-regions of the largest acquired region by the acquired player
+					for (int x = 0; x < Math.pow(size, 2); x++) {
+						QuadTree subTree = tree.getSubTree(k);
+						Square square = getSquare((int) (subTree.getX() + x / size + (-size + 1) / 2), (int) (subTree.getY() + x % size + (-size + 1) / 2));
+						move.addAffectedSquare(square);
+					}
+				}
+			}
+		}
+		return move;
 	}
 	
 	/**
@@ -418,13 +507,10 @@ public class GameBoard {
 	 * Updates the current score. Used only during the game board creation to set initial points with a file board's generation. 
      * @param winnerPlayerNumber
      *           int - The player number of the Square's claimer.
-     * @param looserPlayerNumber
-     *           int - The player number of the Square's unclaimer.  
      * @see Square   
 	 */
-	private void updateScore(int winnerPlayerNumber, int looserPlayerNumber) {
+	private void updateScore(int winnerPlayerNumber) {
 		if (winnerPlayerNumber < 2 ) getScore()[winnerPlayerNumber]++;
-		if (looserPlayerNumber < 2 ) getScore()[looserPlayerNumber]--;
 	}
 	
 	/**

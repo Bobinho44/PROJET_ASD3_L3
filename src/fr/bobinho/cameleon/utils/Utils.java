@@ -1,4 +1,4 @@
-package utils;
+package fr.bobinho.cameleon.utils;
 
 /**
  * The Utils class is a utility class for checking the validity of data.

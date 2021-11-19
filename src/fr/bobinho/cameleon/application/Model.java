@@ -1,15 +1,17 @@
-package application;
+package fr.bobinho.cameleon.application;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
-import board.GameBoard;
-import board.PlayableMove;
-import board.Square;
-import selectable.SelectableAI;
-import selectable.SelectableColor;
-import selectable.SelectableRule;
+import fr.bobinho.cameleon.board.GameBoard;
+import fr.bobinho.cameleon.board.PlayableMove;
+import fr.bobinho.cameleon.board.Square;
+import fr.bobinho.cameleon.selectable.SelectableAI;
+import fr.bobinho.cameleon.selectable.SelectableColor;
+import fr.bobinho.cameleon.selectable.SelectableRule;
 
 /**
  * The Model class contains the application data and logic for manipulate this data.
@@ -32,6 +34,7 @@ public class Model {
 	 */
 	private GameBoard gameboard;
 	private boolean isStarted;
+	private boolean canPlay;
 	private int whoMustPlay;
 	
 	//Graphical representation of Model allowing interactions with users.
@@ -43,6 +46,7 @@ public class Model {
 	public Model() {
 		this.whoMustPlay = 0;
 		this.isStarted = false;
+		this.canPlay = true;
 	}
 	
 	/**
@@ -144,7 +148,7 @@ public class Model {
      *           int - The size of one side of the board.
 	 */
 	public void createGameBoard() {
-		this.gameboard = new GameBoard(getBoardGenerationSeed(), getGameRule(), getBoardSize());
+		this.gameboard = new GameBoard(getBoardGenerationSeed(), getGameRule(), getAI(), getBoardSize());
 		this.view.setGameBoard(gameboard.getBoard());
 		view.update(new int[] {0, 0});
 	}
@@ -164,7 +168,7 @@ public class Model {
 	private void canStart() {
 		view.canStart(getBoardGenerationSeed() != null && getGameRule() != null && (getAI() != null || getGameRule() == SelectableRule.BRAVE) && getBoardSize() != 0);
 	}
-	
+
 	/**
 	 * Starts a new game with selected settings.
 	 */
@@ -195,6 +199,24 @@ public class Model {
 	}
 	
 	/**
+	 * Allows or not the player to play.
+	 * @param canPlay
+     *           String - The new player can play's status.
+	 */
+	private void setCanPlay(boolean canPlay) {
+		this.canPlay = canPlay;
+	}
+	
+	/**
+     * returns if the player can play or if he must wait the IA.
+     * @return boolean - The player can play's status.
+	 */
+	private boolean canPlay() {
+		return this.canPlay;
+	}
+	
+	
+	/**
 	 * Defines who will play in the next round.
      * @param whoMustPlay
      *           int - The number of the next player to play.
@@ -219,22 +241,42 @@ public class Model {
      *           int - The j coordinate of the played square.
 	 */
 	public void play(int i, int j) {
+		
+		//Prevents conflict play problem (because of sleep(1)).
+		if (!canPlay()) return;
+		setCanPlay(false);
+		
+		//Player play with the selected rule.
 		getGameBoard().updateBoard(getGameRule() == SelectableRule.BRAVE ? getAffectedSquaresWithBrave(i, j) : getAffectedSquaresWithReckless(i, j));
+		
+		//Updates the board and the number of the player who must played.
 		setWhoMustPlay(1 - getWhoMustPlay());
 		view.update(getGameBoard().getScore());
+		
+		//Checks if the game is done
 		if (getGameBoard().isFinish()) {
 			view.finish(getGameBoard().getScore());
+			return;
 		}
+		
+		//AI play 1 second after.
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					TimeUnit.SECONDS.sleep(1);
-					getGameBoard().updateBoard(getAI() == SelectableAI.SMART ? getSmartAffectedSquaresWithReckless() : getGameRule() == SelectableRule.BRAVE ? getBestAffectedSquaresWithBrave() : getBestAffectedSquaresWithReckless());
+					
+					//IA play with the selected rule and the selected IA.
+					getGameBoard().updateBoard(getAI() == SelectableAI.SMART ? getSmartAffectedSquaresWithReckless() : getGameRule() == SelectableRule.BRAVE ? getBestAffectedSquaresWithBrave() : getBestAffectedSquaresWithReckless(getGameBoard().getIterableEmptySquares()));
+					
+					//Updates the board and the number of the player who must played.
 					setWhoMustPlay(1 - getWhoMustPlay());
 					view.update(getGameBoard().getScore());
+					
+					//Checks if the game is done
 					if (getGameBoard().isFinish()) {
 						view.finish(getGameBoard().getScore());
 					}
+					setCanPlay(true);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -300,8 +342,12 @@ public class Model {
 	 */
 	public PlayableMove getBestAffectedSquaresWithBrave() {
 		PlayableMove move = null;
+		
+		//Loops all white squares to get the best square.
 		for (Square square : getGameBoard().getIterableEmptySquares()) {
 			PlayableMove testedmove = getAffectedSquaresWithBrave(square.getX(), square.getY());
+			
+			//Checks if the new tested move is better than the previous.
 			move = move == null || testedmove.getRelativeNewScore(getGameBoard().getScore()) > move.getRelativeNewScore(getGameBoard().getScore()) ? testedmove : move;
 		}
 		return move;
@@ -317,24 +363,43 @@ public class Model {
      * @see PlayableMove
 	 */
 	public PlayableMove getAffectedSquaresWithReckless(int i, int j) {
+		
+		//Gets affected Square with the classic reckless rule (without acquiring).
 		PlayableMove affectedMove = new PlayableMove(getGameBoard().getNeighbors(i, j, "Reckless"), SelectableColor.getColorFromInt(getWhoMustPlay()));
-		PlayableMove acquiredMove = getGameBoard().acquiredSquares(i, j, SelectableColor.getColorFromInt(getWhoMustPlay()));
-		return acquiredMove.hasAcquired() ? acquiredMove : affectedMove;
+		
+		//Checks if the selected Square causes an acquirement.
+		PlayableMove acquiredMove = getGameBoard().getLargestAcquiredRegion(i, j, SelectableColor.getColorFromInt(getWhoMustPlay()));
+		
+		//Choose the right movement according to a possible acquirement.
+		return acquiredMove.hasAcquired() ? getGameBoard().getAcquiredRegionSquares(acquiredMove) : affectedMove;
 	}
 	
 	/**
 	 * JouerGloutonTemeraire
 	 * Returns information about a move by playing on the best square to play, defined by a gluttonous strategy with reckless rule.
+     * @param squaresListUsed
+     *           List<Square> - A list of Squares to test (added because of the smart ia).
      * @returns PlayableMove - All information associated with the use of such a square with reckless rule.
      * @see PlayableMove
+     * @see List
+     * @see Square
 	 */
-	public PlayableMove getBestAffectedSquaresWithReckless() {
+	public PlayableMove getBestAffectedSquaresWithReckless(List<Square> squaresListUsed) {
 		PlayableMove move = null;
-		for (Square square : getGameBoard().getIterableEmptySquares()) {
-			PlayableMove testedmove = getAffectedSquaresWithReckless(square.getX(), square.getY());
-			move = move == null || testedmove.getRelativeNewScore(getGameBoard().getScore()) > move.getRelativeNewScore(getGameBoard().getScore()) ? testedmove : move;
+		
+		//Loops all white squares to get the best square.
+		for (Square square : squaresListUsed) {
+			
+			PlayableMove testedClassicMove = new PlayableMove(getGameBoard().getNeighbors(square.getX(), square.getY(), "Reckless"), SelectableColor.getColorFromInt(getWhoMustPlay()));
+			PlayableMove testedAcquiredmove = getGameBoard().getLargestAcquiredRegion(square.getX(), square.getY(), SelectableColor.getColorFromInt(getWhoMustPlay()));
+			
+			int selectedMoveSquare = testedAcquiredmove.hasAcquired() ? (int) (9 * Math.pow(4, testedAcquiredmove.getLargestRegionAcquired().getLevel())) : testedClassicMove.getAffectedSquares().size();
+			int actualMoveSquare = move == null ? 0 : move.hasAcquired() ? (int) (9 * Math.pow(4, move.getLargestRegionAcquired().getLevel())) : move.getAffectedSquares().size();
+			
+			move = move != null && selectedMoveSquare <= actualMoveSquare ? move : (selectedMoveSquare > 8 ? testedAcquiredmove : testedClassicMove);
+			
 		}
-		return move;
+		return move.hasAcquired() ? getGameBoard().getAcquiredRegionSquares(move) : move;
 	}
 
 	/**
@@ -344,10 +409,32 @@ public class Model {
      * @see PlayableMove
 	 */
 	public PlayableMove getSmartAffectedSquaresWithReckless() {
-		/*
-		 * à définir
-		 */
-		return null;
+		List<Square> selectedRegion = new ArrayList<Square>();
+		
+		//Loops all empty little regions
+		for (Square square : getGameBoard().getIterableEmptyLittleRegions()) {
+			List<Square> region = getGameBoard().getNeighbors(square.getX(), square.getY(), "Colored");
+			
+			//Check if a little region need one square to be acquired (we will choose a region of this type if possible).
+			//Or we get a region with less than 8 colored squares.
+			if (region.size() == 8 || (region.size() < 7 && selectedRegion.size() == 0)) {
+				selectedRegion.add(square);
+			}
+		}
+		
+		//If there are several regions requiring only one square to be acquired, the one with the most points (best acquisition) is chosen.
+		if (selectedRegion.size() > 1) {
+			return getBestAffectedSquaresWithReckless(selectedRegion);
+		}
+		
+		//Otherwise we play on a region with less than 8 colored squares.
+		else if (selectedRegion.size() == 1) {
+			Square selectedSquare = getGameBoard().getNeighbors(selectedRegion.get(0).getX(), selectedRegion.get(0).getY(), "Uncolored").get(0);
+			return getAffectedSquaresWithReckless(selectedSquare.getX(), selectedSquare.getY());
+		}
+		
+		//Security if no squares were found (e.g. only regions with 8 squares filled).
+		return getAffectedSquaresWithReckless(getGameBoard().getIterableEmptySquares().get(0).getX(), getGameBoard().getIterableEmptySquares().get(0).getX());
 	}
 	
 }

@@ -1,4 +1,4 @@
-package selectable;
+package fr.bobinho.cameleon.selectable;
 
 /**
  * The SelectableAI enum contains all selectable AI.

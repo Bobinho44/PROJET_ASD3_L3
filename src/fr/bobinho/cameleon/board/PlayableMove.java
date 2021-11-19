@@ -1,8 +1,9 @@
-package board;
+package fr.bobinho.cameleon.board;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import selectable.SelectableColor;
+import fr.bobinho.cameleon.selectable.SelectableColor;
 
 /**
  * The PlayableMove class in an abtraction of a move made by a player and its consequences (affected Squares, new score...).
@@ -36,6 +37,22 @@ public class PlayableMove {
 	public PlayableMove(QuadTree largestRegionAcquired, List<Square> affectedSquares, SelectableColor color) {
 		this.largestRegionAcquired = largestRegionAcquired;
 		this.affectedSquares = affectedSquares;
+		this.color = color;
+	}
+	
+	/**
+	 * Creates a PlayableMove with an acquired region but whitout Squares.
+     * @param largestRegionAcquired
+     *           QuadTree - The largest region acquired with this move.
+     * @param color
+     *           SelectableColor - The color of the player who wins these Squares. 
+     * @see QuadTree
+     * @see List  
+     * @see SelectableColor
+	 */
+	public PlayableMove(QuadTree largestRegionAcquired, SelectableColor color) {
+		this.largestRegionAcquired = largestRegionAcquired;
+		this.affectedSquares = new ArrayList<Square>();
 		this.color = color;
 	}
 	

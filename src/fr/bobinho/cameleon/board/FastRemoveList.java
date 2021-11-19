@@ -1,4 +1,4 @@
-package board;
+package fr.bobinho.cameleon.board;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +16,14 @@ public class FastRemoveList {
 	// The squares list.
 	private List<Square> squares;
 	
+	private String type;
+	
 	/**
 	 * Creates an empty list.
 	 */
-	public FastRemoveList() {
+	public FastRemoveList(String type) {
 		this.squares = new ArrayList<Square>();
+		this.type = type;
 	}
 	
 	/**
@@ -39,7 +42,7 @@ public class FastRemoveList {
 	 * @see Square
 	 */
 	public int getLastIndex() {
-		return this.getSquares().size() - 1;
+		return getSquares().size() - 1;
 	}
 	
 	/**
@@ -48,7 +51,7 @@ public class FastRemoveList {
 	 * @see Square
 	 */
 	public Square getLastElement() {
-		return this.getSquares().get(getLastIndex());
+		return getSquares().get(getLastIndex());
 	}
 	
 	/**
@@ -58,8 +61,8 @@ public class FastRemoveList {
 	 * @see Square
 	 */
 	public void add(Square added) {
-		this.getSquares().add(added);
-		added.setEmptyNumber(getLastIndex());
+		getSquares().add(added);
+		setEmptyNumber(added, getLastIndex());
 	}
 	
 	/**
@@ -70,10 +73,23 @@ public class FastRemoveList {
 	 * @see Square
 	 */
 	public void remove(Square removed) {
-		this.getLastElement().setEmptyNumber(removed.getEmptyNumber());
-		this.getSquares().set(removed.getEmptyNumber(), getLastElement());
-		this.getSquares().remove(getLastIndex());
-		removed.setEmptyNumber(-1);
+		setEmptyNumber(getLastElement(), getEmptyNumber(removed));
+		getSquares().set(getEmptyNumber(removed), getLastElement());
+		getSquares().remove(getLastIndex());
+		setEmptyNumber(removed, -1);
+	}
+	
+	private void setEmptyNumber(Square square, int number) {
+		if (type.equals("Squares")) {
+			square.setEmptySquaresNumber(number);
+		}
+		else {
+			square.setEmptyLittleRegionsNumber(number);
+		}
+	}
+	
+	private int getEmptyNumber(Square square) {
+		return type.equals("Squares") ? square.getEmptySquaresNumber() : square.getEmptyLittleRegionsNumber();
 	}
 	
 }
