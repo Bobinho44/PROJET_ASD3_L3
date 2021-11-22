@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.Robot;
 import java.awt.GridLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -151,6 +152,7 @@ public class View extends JFrame implements MouseListener {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
+        setMinimumSize(new Dimension(1440, 780));
 		setVisible(true);	
 		//pack();
 	
