@@ -2,7 +2,7 @@ package fr.bobinho.cameleon.utils;
 
 /**
  * The Utils class is a utility class for checking the validity of data.
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public class Utils {
@@ -76,6 +76,8 @@ public class Utils {
 	public static boolean isValidGameBoardSize(String boardSize, int... expectedValue) {
 		if (boardSize != null && boardSize.matches("^[0-9]+$")) {
 			int intValue = Integer.valueOf(boardSize);
+			
+			//Check if the value is between 1 and 99 and if it is of the form 3*2^n.
 			return isBeetwen(1, 99, intValue) && intValue % 3 == 0 && ((intValue/3 & (intValue/3 - 1)) == 0) && (expectedValue.length == 1 ? intValue == expectedValue[0] : true);
 		}
 		return false;

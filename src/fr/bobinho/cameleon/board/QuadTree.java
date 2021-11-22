@@ -7,7 +7,7 @@ import fr.bobinho.cameleon.utils.Utils;
 /**
  * The QuadTree class in an abtraction of the game board region (and subregion).
  * 
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public class QuadTree {

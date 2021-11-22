@@ -11,7 +11,7 @@ import java.awt.Color;
 /**
  * The Square class represents the squares of the game board.
  * 
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public class Square {

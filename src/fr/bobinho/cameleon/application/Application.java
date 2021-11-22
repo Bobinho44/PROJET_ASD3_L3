@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
  * It instantiates the three pillars of the application (MVC), 
  * creates the elemental links between them, and launches the application.
  * 
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public class Application {

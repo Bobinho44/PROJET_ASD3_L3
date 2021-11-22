@@ -3,7 +3,7 @@ package fr.bobinho.cameleon.selectable;
 /**
  * The SelectableAI enum contains all selectable AI.
  * 
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public enum SelectableAI {

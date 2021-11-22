@@ -3,7 +3,7 @@ package fr.bobinho.cameleon.selectable;
 /**
  * The SelectableRule enum contains all the rules the player can use.
  * 
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public enum SelectableRule {

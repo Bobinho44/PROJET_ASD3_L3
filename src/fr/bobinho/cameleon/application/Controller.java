@@ -21,7 +21,7 @@ import fr.bobinho.cameleon.utils.Utils;
  * 
  * @see Model
  * @see View
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public class Controller {

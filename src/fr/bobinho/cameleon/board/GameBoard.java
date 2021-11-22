@@ -13,7 +13,7 @@ import fr.bobinho.cameleon.utils.Utils;
 /**
  * The GameBoard class represents the game board including Squares (empty or not) and regions.
  * 
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public class GameBoard {

@@ -8,7 +8,7 @@ import java.util.List;
  * is that it allows to add and remove a Square in constant time thanks to the emptyNumber field of the Square.
  * 
  * @see Square
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 public class FastRemoveList {

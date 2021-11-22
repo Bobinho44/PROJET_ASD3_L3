@@ -12,7 +12,7 @@ import fr.bobinho.cameleon.board.Square;
 /**
  * DrawingPanel is the class representing the drawing panel where the drawing part of the application will be managed.
  * 
- * @author Kylian GERARD
+ * @author Kylian GERARD and Quentin GOMES DOS REIS
  * @version 1.0
  */
 @SuppressWarnings("serial")
