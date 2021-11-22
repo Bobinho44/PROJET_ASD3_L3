@@ -76,7 +76,7 @@ public class Utils {
 	public static boolean isValidGameBoardSize(String boardSize, int... expectedValue) {
 		if (boardSize != null && boardSize.matches("^[0-9]+$")) {
 			int intValue = Integer.valueOf(boardSize);
-			return isBeetwen(1, 99, intValue) && ((intValue/3 & (intValue/3 - 1)) == 0) && (expectedValue.length == 1 ? intValue == expectedValue[0] : true);
+			return isBeetwen(1, 99, intValue) && intValue % 3 == 0 && ((intValue/3 & (intValue/3 - 1)) == 0) && (expectedValue.length == 1 ? intValue == expectedValue[0] : true);
 		}
 		return false;
 	}
