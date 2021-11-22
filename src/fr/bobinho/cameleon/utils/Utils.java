@@ -2,7 +2,7 @@ package fr.bobinho.cameleon.utils;
 
 /**
  * The Utils class is a utility class for checking the validity of data.
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 public class Utils {

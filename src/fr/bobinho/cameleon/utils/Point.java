@@ -2,7 +2,7 @@ package fr.bobinho.cameleon.utils;
 
 /**
  * The Point class represents a point of dimension two on a plane.
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 public class Point {

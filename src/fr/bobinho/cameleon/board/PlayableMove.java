@@ -8,7 +8,7 @@ import fr.bobinho.cameleon.selectable.SelectableColor;
 /**
  * The PlayableMove class in an abtraction of a move made by a player and its consequences (affected Squares, new score...).
  * 
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 public class PlayableMove {

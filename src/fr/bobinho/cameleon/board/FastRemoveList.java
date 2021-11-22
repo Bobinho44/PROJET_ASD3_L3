@@ -8,7 +8,7 @@ import java.util.List;
  * is that it allows to add and remove a Square in constant time thanks to the emptyNumber field of the Square.
  * 
  * @see Square
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 public class FastRemoveList {
@@ -79,6 +79,14 @@ public class FastRemoveList {
 		setEmptyNumber(removed, -1);
 	}
 	
+	/**
+	 * Changes the Square's empty "Type" number. (type = squares or regions)
+     * @param square
+     *           Square - The modified Square.
+     * @param number
+     *           int - The new empty number.
+	 * @see Square
+	 */
 	private void setEmptyNumber(Square square, int number) {
 		if (type.equals("Squares")) {
 			square.setEmptySquaresNumber(number);
@@ -88,6 +96,14 @@ public class FastRemoveList {
 		}
 	}
 	
+	
+	/**
+	 * Returns the Square's empty "Type" number. (type = squares or regions)
+     * @param square
+     *           Square - The selected Square.
+     * @return int - The Square's empty "Type" number. 
+	 * @see Square
+	 */
 	private int getEmptyNumber(Square square) {
 		return type.equals("Squares") ? square.getEmptySquaresNumber() : square.getEmptyLittleRegionsNumber();
 	}

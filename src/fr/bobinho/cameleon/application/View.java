@@ -33,7 +33,7 @@ import fr.bobinho.cameleon.utils.Utils;
 /**
  * The View class is a graphical representation of the Model allowing interactions with users.
  * 
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 @SuppressWarnings("serial")

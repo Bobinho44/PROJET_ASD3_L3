@@ -5,7 +5,7 @@ import java.awt.Color;
 /**
  * The SelectableColor enum contains all player colors .
  * 
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 public enum SelectableColor {

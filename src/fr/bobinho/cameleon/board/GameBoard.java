@@ -13,7 +13,7 @@ import fr.bobinho.cameleon.utils.Utils;
 /**
  * The GameBoard class represents the game board including Squares (empty or not) and regions.
  * 
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 public class GameBoard {
@@ -163,6 +163,7 @@ public class GameBoard {
 	}
 	
 	/**
+	 * RemplirRegion - Application des données.
 	 * Updates the Squares's color and region's color and manages acquired status and the score. 
      * @param move
      *           PlayableMove - A move played by a player.  
@@ -444,7 +445,7 @@ public class GameBoard {
 	}
 	
 	/**
-	 * RemplirRegion
+	 * RemplirRegion - récupération des données.
 	 * Returns a move used with reckless rule containing the information of an acquisition (used to recover all the squares of the largest acquired region).
      * @param acquiredMove
      *           PlayableMove - The x-coordinate of the selected Square. 

@@ -16,7 +16,7 @@ import fr.bobinho.cameleon.selectable.SelectableRule;
 /**
  * The Model class contains the application data and logic for manipulate this data.
  * 
- * @author Kylian GERARD and Quentin GOMES DOS RIES
+ * @author Kylian GERARD
  * @version 1.0
  */
 public class Model {
