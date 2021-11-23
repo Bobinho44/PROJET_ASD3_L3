@@ -152,7 +152,7 @@ public class View extends JFrame implements MouseListener {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		getContentPane().add(getDrawingPanel() , BorderLayout.CENTER);
-        setMinimumSize(new Dimension(1440, 780));
+        setMinimumSize(new Dimension(1400, 700));
 		setVisible(true);	
 		//pack();
 	

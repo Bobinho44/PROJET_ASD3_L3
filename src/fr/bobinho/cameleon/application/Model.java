@@ -185,6 +185,7 @@ public class Model {
 		this.isStarted = false;
 		this.boardGenerationSeed = null;
 		this.gameRule = null;
+		this.AI = null;
 		this.gameboard = null;
 		this.whoMustPlay = 0;
 		this.view.reset();
