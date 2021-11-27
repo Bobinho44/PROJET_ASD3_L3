@@ -12,7 +12,7 @@ public class Utils {
      * @param point
      *           java.awt.Point - The class point implemented by Java.   
      * @return Point - The point represented by a custom implementation.   
-     * @See java.awt.Point
+     * @see java.awt.Point
      * @see Point    
 	 */
 	public static Point javaPointToPoint(java.awt.Point point) {

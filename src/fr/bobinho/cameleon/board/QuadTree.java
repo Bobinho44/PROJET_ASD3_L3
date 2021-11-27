@@ -42,7 +42,7 @@ public class QuadTree {
 	
 	/**
 	 * Sets the square's acquired status and color.
-     * @param acquired
+     * @param acquiredColor
      *           SelectableColor - The Square's acquired color.   
      * @see SelectableColor
 	 */

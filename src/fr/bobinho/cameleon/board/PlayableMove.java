@@ -27,7 +27,7 @@ public class PlayableMove {
      * @param largestRegionAcquired
      *           QuadTree - The largest region acquired with this move.
      * @param affectedSquares
-     *           List<Square> - The list of all the Squares concerned by this move. 
+     *           List - The list of all the Squares concerned by this move. 
      * @param color
      *           SelectableColor - The color of the player who wins these Squares. 
      * @see QuadTree
@@ -59,7 +59,7 @@ public class PlayableMove {
 	/**
 	 * Creates a PlayableMove without acquired region.
      * @param affectedSquares
-     *           List<Square> - The list of all the Squares concerned by this move. 
+     *           List - The list of all the Squares concerned by this move. 
      * @param color
      *           SelectableColor - The color of the player who wins these Squares. 
      * @see List  
@@ -99,7 +99,7 @@ public class PlayableMove {
 	
 	/**
 	 * Adds a new affected Square to this move.
-     * @param largestRegionAcquired
+     * @param affectedSquare
      *           Square - The new square affected by this move.  
      * @see Square          
 	 */
@@ -109,7 +109,7 @@ public class PlayableMove {
 	
 	/**
 	 * Returns all affected Squares by this move.
-     * @return List<Square> - The list of affected Squares.         
+     * @return List - The list of affected Squares.         
 	 */
 	public List<Square> getAffectedSquares() {
 		return this.affectedSquares;

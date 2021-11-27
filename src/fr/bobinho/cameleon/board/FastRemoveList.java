@@ -20,6 +20,9 @@ public class FastRemoveList {
 	
 	/**
 	 * Creates an empty list.
+     * @param type
+     *           String - The type of data used with this list ("Squares" or "Regions").
+     * @see String
 	 */
 	public FastRemoveList(String type) {
 		this.squares = new ArrayList<Square>();
@@ -28,7 +31,7 @@ public class FastRemoveList {
 	
 	/**
 	 * Returns the actual squares list.
-     * @return List<Square> - The squares list.
+     * @return List - The squares list.
 	 * @see Square
 	 * @see List
 	 */

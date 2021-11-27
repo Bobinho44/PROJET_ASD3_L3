@@ -51,7 +51,7 @@ public class Square {
 	
 	/**
 	 * Sets the Square index in the empty little regions list.
-     * @param emptyNumber
+     * @param emptyLittleRegionsNumber
      *           int - The new empty list's little regions index.   
 	 */
 	public void setEmptyLittleRegionsNumber(int emptyLittleRegionsNumber) {
@@ -68,7 +68,7 @@ public class Square {
 	
 	/**
 	 * Sets the Square index in the empty squares list.
-     * @param emptyNumber
+     * @param emptySquaresNumber
      *           int - The new empty list's Squares index.   
 	 */
 	public void setEmptySquaresNumber(int emptySquaresNumber) {

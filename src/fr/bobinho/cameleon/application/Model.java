@@ -142,10 +142,6 @@ public class Model {
 	
 	/**
 	 * Creates gameboard with selected settings.
-     * @param boardGenerationSeed
-     *           String - The board generation seed.
-     * @param boardSize
-     *           int - The size of one side of the board.
 	 */
 	public void createGameBoard() {
 		this.gameboard = new GameBoard(getBoardGenerationSeed(), getGameRule(), getAI(), getBoardSize());
@@ -327,7 +323,7 @@ public class Model {
      *           int - The i coordinate of the selected square.
      * @param j
      *           int - The j coordinate of the selected square.
-     * @returns PlayableMove - All information associated with the use of this square with brave rule.
+     * @return PlayableMove - All information associated with the use of this square with brave rule.
      * @see PlayableMove
 	 */
 	public PlayableMove getAffectedSquaresWithBrave(int i, int j) {
@@ -337,7 +333,7 @@ public class Model {
 	/**
 	 * JouerGloutonBrave
 	 * Returns information about a move by playing on the best square to play, defined by a gluttonous strategy with brave rule.
-     * @returns PlayableMove - All information associated with the use of such a square with brave rule.
+     * @return PlayableMove - All information associated with the use of such a square with brave rule.
      * @see PlayableMove
 	 */
 	public PlayableMove getBestAffectedSquaresWithBrave() {
@@ -359,7 +355,7 @@ public class Model {
      *           int - The i coordinate of the selected square.
      * @param j
      *           int - The j coordinate of the selected square.
-     * @returns PlayableMove - All information associated with the use of this square with reckless rule.
+     * @return PlayableMove - All information associated with the use of this square with reckless rule.
      * @see PlayableMove
 	 */
 	public PlayableMove getAffectedSquaresWithReckless(int i, int j) {
@@ -378,8 +374,8 @@ public class Model {
 	 * JouerGloutonTemeraire
 	 * Returns information about a move by playing on the best square to play, defined by a gluttonous strategy with reckless rule.
      * @param squaresListUsed
-     *           List<Square> - A list of Squares to test (added because of the smart ia).
-     * @returns PlayableMove - All information associated with the use of such a square with reckless rule.
+     *           List - A list of Squares to test (added because of the smart ia).
+     * @return PlayableMove - All information associated with the use of such a square with reckless rule.
      * @see PlayableMove
      * @see List
      * @see Square
@@ -405,7 +401,7 @@ public class Model {
 	/**
 	 * JouerIATemeraire
 	 * Returns information about a move by playing on the best square to play, defined by a smartest strategy with reckless rule.
-     * @returns PlayableMove - All information associated with the use of such a square with reckless rule.
+     * @return PlayableMove - All information associated with the use of such a square with reckless rule.
      * @see PlayableMove
 	 */
 	public PlayableMove getSmartAffectedSquaresWithReckless() {

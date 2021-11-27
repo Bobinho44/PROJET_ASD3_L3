@@ -46,7 +46,7 @@ public class Controller {
      * @param boardFillingFile
      *           File - A file containing the representation of a game board in text format.
      * @return boolean - A boolean indicating whether the input file was valid or not.
-     * @See Model
+     * @see Model
      * @see View
      * @see File
 	 */
@@ -81,7 +81,7 @@ public class Controller {
 	 * Transmits the selected game rule to the Model.
      * @param gameRule
      *           SeletableRule - The selected game rule.
-     * @See Model
+     * @see Model
      * @see SelectableRule
 	 */
 	public void setGameRule(SelectableRule gameRule) {
@@ -92,7 +92,7 @@ public class Controller {
 	 * Transmits the selected AI to the Model.
      * @param AI
      *           SeletableRule - The selected AI.
-     * @See Model
+     * @see Model
      * @see SelectableAI
 	 */
 	public void setAI(SelectableAI AI) {
@@ -105,7 +105,7 @@ public class Controller {
      * @param boardSize
      *           String - A representation of the number of squares per side of the game board.
      * @return boolean - A boolean indicating whether the input board size was valid or not.
-     * @See Model
+     * @see Model
      * @see View
      * @see String
 	 */
@@ -119,7 +119,7 @@ public class Controller {
 	
 	/**
 	 * Tells the Model to start the game.
-     * @See Model
+     * @see Model
 	 */
 	public void start() {
 		model.start();
@@ -127,7 +127,7 @@ public class Controller {
 	
 	/**
 	 * Tells the Model to reset the game board.
-     * @See Model
+     * @see Model
 	 */
 	public void reset() {
 		model.reset();
@@ -143,7 +143,7 @@ public class Controller {
      *           Color - The color of the pixel clicked on.
      * @param isLeftClick
      *           boolean - A representation of the type of click (right or left).          
-     * @See Model
+     * @see Model
      * @see Color
      * @see Point
 	 */

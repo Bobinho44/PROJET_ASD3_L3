@@ -42,12 +42,14 @@ public class GameBoard {
      *           String - The board generation seed generated with a file.
      * @param gameRule
      *           SelectableRule - The selected game rule.
+     * @param AI
+     *           SelectableAI - The selected AI.
      * @param boardSize
      *           int - The length in number of squares of one side of the board.. 
      * @see String
      * @see SelectableRule
 	 */
-	public GameBoard(String boardGenerationSeed, SelectableRule gameRule, SelectableAI IA, int boardSize) {
+	public GameBoard(String boardGenerationSeed, SelectableRule gameRule, SelectableAI AI, int boardSize) {
 		this.emptyLittleRegions = new FastRemoveList("Regions");
 		this.emptySquares = new FastRemoveList("Squares");
 		this.board = new Square[boardSize][boardSize];
@@ -76,8 +78,8 @@ public class GameBoard {
 			this.regions = createAllRegions(new Point((float) (getBoardSize() - 1)/2, (float) (getBoardSize() - 1)/2), 0);
 			
 			//Manages the regions potentially already acquired via the generation of the board by file.
-			if (!boardGenerationSeed.equals("") || IA == SelectableAI.SMART) {
-				acquiredInitialRegions(IA);
+			if (!boardGenerationSeed.equals("") || AI == SelectableAI.SMART) {
+				acquiredInitialRegions(AI);
 			}
 		}
 	}
@@ -114,7 +116,7 @@ public class GameBoard {
 	
 	/**
 	 * Returns an iterable list of all empty little regions.
-     * @return List<Square> - The empty little regions's list.   
+     * @return List - The empty little regions's list.   
      * @see Square
      * @see List
 	 */
@@ -154,7 +156,7 @@ public class GameBoard {
 	
 	/**
 	 * Returns an iterable list of all empty Squares.
-     * @return List<Square> - The empty Squares's list.   
+     * @return List - The empty Squares's list.   
      * @see Square
      * @see List
 	 */
@@ -255,7 +257,7 @@ public class GameBoard {
      *           int - The y-coordinate of the selected Square.
      * @param condition
      *           String - The selection condition.  
-     * @return List<Square> - All Square's neighbors that validate a specific condition.
+     * @return List - All Square's neighbors that validate a specific condition.
      * @see String
      * @see Square
      * @see List
@@ -320,7 +322,8 @@ public class GameBoard {
      * @param center
      *           Point - The center of the region.
      * @param heigth
-     *           int - The actual heigth of the tree.  
+     *           int - The actual heigth of the tree. 
+     * @return QuadTree - The tree representing all the regions.
      * @see Point
      * @see QuadTree  
 	 */
@@ -358,8 +361,10 @@ public class GameBoard {
 	
 	/**
 	 * Manages the regions potentially already acquired via the generation of the board by file. 
+     * @param AI
+     *           SelectableAI - The selected AI.
 	 */
-	public void acquiredInitialRegions(SelectableAI IA) {
+	public void acquiredInitialRegions(SelectableAI AI) {
 		
 		//Checks all little region's center
 		for (int i = 0; i < Math.pow(getBoardSize() / 3, 2); i++) {
@@ -378,7 +383,7 @@ public class GameBoard {
 					updateBoard(getAcquiredRegionSquares(getLargestAcquiredRegion(littleRegionCenter.getX(), littleRegionCenter.getY(), littleRegionCenter.getColor())));
 				}
 			}	
-			if (!isAcquired && IA == SelectableAI.SMART) {
+			if (!isAcquired && AI == SelectableAI.SMART) {
 				addEmptyLittleRegions(littleRegionCenter);
 			}
 		}
