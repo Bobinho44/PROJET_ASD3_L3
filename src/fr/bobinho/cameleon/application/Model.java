@@ -13,6 +13,8 @@ import fr.bobinho.cameleon.selectable.SelectableAI;
 import fr.bobinho.cameleon.selectable.SelectableColor;
 import fr.bobinho.cameleon.selectable.SelectableRule;
 
+//TODO arbre classé en fonction du score ateignable
+
 /**
  * The Model class contains the application data and logic for manipulate this data.
  * 
@@ -146,7 +148,7 @@ public class Model {
 	public void createGameBoard() {
 		this.gameboard = new GameBoard(getBoardGenerationSeed(), getGameRule(), getAI(), getBoardSize());
 		this.view.setGameBoard(gameboard.getBoard());
-		view.update(new int[] {0, 0});
+		view.update(getGameBoard().getScore());
 	}
 	
 	/**
@@ -389,6 +391,9 @@ public class Model {
 			
 			PlayableMove testedClassicMove = new PlayableMove(getGameBoard().getNeighbors(square.getX(), square.getY(), "Reckless"), SelectableColor.getColorFromInt(getWhoMustPlay()));
 			PlayableMove testedAcquiredmove = getGameBoard().getLargestAcquiredRegion(square.getX(), square.getY(), SelectableColor.getColorFromInt(getWhoMustPlay()));
+			if (testedAcquiredmove.getColor() != SelectableColor.getColorFromInt(getWhoMustPlay())) {
+				testedAcquiredmove.setLargestRegionAcquired(null);
+			}
 			
 			int selectedMoveSquare = testedAcquiredmove.hasAcquired() ? (int) (9 * Math.pow(4, testedAcquiredmove.getLargestRegionAcquired().getLevel())) : testedClassicMove.getAffectedSquares().size();
 			int actualMoveSquare = move == null ? 0 : move.hasAcquired() ? (int) (9 * Math.pow(4, move.getLargestRegionAcquired().getLevel())) : move.getAffectedSquares().size();
@@ -421,7 +426,10 @@ public class Model {
 		
 		//If there are several regions requiring only one square to be acquired, the one with the most points (best acquisition) is chosen.
 		if (selectedRegion.size() > 1) {
-			return getBestAffectedSquaresWithReckless(selectedRegion);
+			PlayableMove move = getBestAffectedSquaresWithReckless(selectedRegion);
+			if (move.getColor() == SelectableColor.BLUE) {
+				return move;
+			}
 		}
 		
 		//Otherwise we play on a region with less than 8 colored squares.
@@ -431,7 +439,7 @@ public class Model {
 		}
 		
 		//Security if no squares were found (e.g. only regions with 8 squares filled).
-		return getAffectedSquaresWithReckless(getGameBoard().getIterableEmptySquares().get(0).getX(), getGameBoard().getIterableEmptySquares().get(0).getX());
+		return getBestAffectedSquaresWithReckless(getGameBoard().getIterableEmptySquares());
 	}
 	
 }
